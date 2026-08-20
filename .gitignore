@@ -1,0 +1,42 @@
+# Python virtual environments
+.venv/
+.venv-1/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+notebooks/cache/
+
+# Environment variables / secrets
+.env
+.env.*
+!.env.example
+
+# Frontend generated files
+node_modules/
+.next/
+
+# IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# Large/intermediate datasets
+data/raw/
+data/processed/
+notebooks/09_model_validation.ipynb
