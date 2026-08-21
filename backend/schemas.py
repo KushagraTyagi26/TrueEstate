@@ -88,4 +88,15 @@ class RecommendationInput(BaseModel):
         ge=1,
         le=10
     )
-    
+
+
+# ============================================================
+# COMPARISON INPUT
+# Used by /compare
+# ============================================================
+
+class ComparisonInput(BaseModel):
+    properties: list[PropertyInput] = Field(
+        min_length=2,
+        max_length=3
+    )
