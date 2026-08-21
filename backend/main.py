@@ -4,15 +4,16 @@ from schemas import PropertyInput
 from model_service import predict_rent
 from location_service import get_location_intelligence
 from valuation_service import evaluate_price
+from value_service import calculate_value_score
 
 
 app = FastAPI(
     title="TrueEstate API",
     description=(
         "AI-powered rental price, valuation, "
-        "and location intelligence API"
+        "value-for-money, and location intelligence API"
     ),
-    version="2.1.0"
+    version="2.2.0"
 )
 
 
@@ -25,7 +26,7 @@ def root():
     return {
         "message": "TrueEstate API is running",
         "status": "success",
-        "version": "2.1.0"
+        "version": "2.2.0"
     }
 
 
@@ -72,7 +73,7 @@ def predict(property_data: PropertyInput):
 
 
 # ============================================================
-# PROPERTY PRICE EVALUATION
+# PROPERTY PRICE + VALUE EVALUATION
 # ============================================================
 
 @app.post("/evaluate")
@@ -92,10 +93,16 @@ def evaluate_property(property_data: PropertyInput):
                 )
             )
 
-        # Get TrueEstate fair-rent estimate
+        # ----------------------------------------------------
+        # FAIR-RENT PREDICTION
+        # ----------------------------------------------------
+
         prediction = predict_rent(data)
 
-        # Compare asking rent with predicted fair rent
+        # ----------------------------------------------------
+        # PRICE EVALUATION
+        # ----------------------------------------------------
+
         valuation = evaluate_price(
             predicted_rent=prediction[
                 "predicted_monthly_rent"
@@ -103,38 +110,64 @@ def evaluate_property(property_data: PropertyInput):
             asking_rent=asking_rent
         )
 
+        # ----------------------------------------------------
+        # MARKET INTELLIGENCE
+        # ----------------------------------------------------
+
+        market_intelligence = {
+            "predicted_rate_per_sqft":
+                prediction[
+                    "predicted_rate_per_sqft"
+                ],
+
+            "locality_market_rate":
+                prediction[
+                    "locality_market_rate"
+                ],
+
+            "locality_bed_market_rate":
+                prediction[
+                    "locality_bed_market_rate"
+                ],
+
+            "accessibility_score":
+                prediction[
+                    "accessibility_score"
+                ],
+
+            "accessibility_available":
+                prediction[
+                    "accessibility_available"
+                ]
+        }
+
+        # ----------------------------------------------------
+        # VALUE-FOR-MONEY SCORE
+        # ----------------------------------------------------
+
+        value_analysis = calculate_value_score(
+            asking_rent=asking_rent,
+            area=data["area"],
+            valuation=valuation,
+            market_intelligence=market_intelligence
+        )
+
+        # ----------------------------------------------------
+        # RESPONSE
+        # ----------------------------------------------------
+
         return {
             "status": "success",
             "currency": "INR",
 
-            "valuation": valuation,
+            "valuation":
+                valuation,
 
-            "market_intelligence": {
-                "predicted_rate_per_sqft":
-                    prediction[
-                        "predicted_rate_per_sqft"
-                    ],
+            "market_intelligence":
+                market_intelligence,
 
-                "locality_market_rate":
-                    prediction[
-                        "locality_market_rate"
-                    ],
-
-                "locality_bed_market_rate":
-                    prediction[
-                        "locality_bed_market_rate"
-                    ],
-
-                "accessibility_score":
-                    prediction[
-                        "accessibility_score"
-                    ],
-
-                "accessibility_available":
-                    prediction[
-                        "accessibility_available"
-                    ]
-            }
+            "value_analysis":
+                value_analysis
         }
 
     except HTTPException:
