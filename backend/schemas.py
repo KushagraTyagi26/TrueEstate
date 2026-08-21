@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import Literal
+from typing import Literal, Optional
 
 
 class PropertyInput(BaseModel):
@@ -22,4 +22,10 @@ class PropertyInput(BaseModel):
         "House",
         "Villa"
     ]
+
+    # Optional because /predict does not require it
+    asking_rent: Optional[float] = Field(
+        default=None,
+        gt=0
+    )
     

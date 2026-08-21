@@ -3,15 +3,16 @@ from fastapi import FastAPI, HTTPException
 from schemas import PropertyInput
 from model_service import predict_rent
 from location_service import get_location_intelligence
+from valuation_service import evaluate_price
 
 
 app = FastAPI(
     title="TrueEstate API",
     description=(
-        "AI-powered rental price and "
-        "location intelligence API"
+        "AI-powered rental price, valuation, "
+        "and location intelligence API"
     ),
-    version="2.0.0"
+    version="2.1.0"
 )
 
 
@@ -21,11 +22,10 @@ app = FastAPI(
 
 @app.get("/")
 def root():
-
     return {
         "message": "TrueEstate API is running",
         "status": "success",
-        "version": "2.0.0"
+        "version": "2.1.0"
     }
 
 
@@ -35,7 +35,6 @@ def root():
 
 @app.get("/health")
 def health():
-
     return {
         "status": "healthy"
     }
@@ -49,7 +48,6 @@ def health():
 def predict(property_data: PropertyInput):
 
     try:
-
         result = predict_rent(
             property_data.model_dump()
         )
@@ -61,14 +59,94 @@ def predict(property_data: PropertyInput):
         }
 
     except ValueError as e:
-
         raise HTTPException(
             status_code=400,
             detail=str(e)
         )
 
     except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 
+
+# ============================================================
+# PROPERTY PRICE EVALUATION
+# ============================================================
+
+@app.post("/evaluate")
+def evaluate_property(property_data: PropertyInput):
+
+    try:
+        data = property_data.model_dump()
+
+        asking_rent = data.get("asking_rent")
+
+        if asking_rent is None:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "asking_rent is required "
+                    "for property evaluation"
+                )
+            )
+
+        # Get TrueEstate fair-rent estimate
+        prediction = predict_rent(data)
+
+        # Compare asking rent with predicted fair rent
+        valuation = evaluate_price(
+            predicted_rent=prediction[
+                "predicted_monthly_rent"
+            ],
+            asking_rent=asking_rent
+        )
+
+        return {
+            "status": "success",
+            "currency": "INR",
+
+            "valuation": valuation,
+
+            "market_intelligence": {
+                "predicted_rate_per_sqft":
+                    prediction[
+                        "predicted_rate_per_sqft"
+                    ],
+
+                "locality_market_rate":
+                    prediction[
+                        "locality_market_rate"
+                    ],
+
+                "locality_bed_market_rate":
+                    prediction[
+                        "locality_bed_market_rate"
+                    ],
+
+                "accessibility_score":
+                    prediction[
+                        "accessibility_score"
+                    ],
+
+                "accessibility_available":
+                    prediction[
+                        "accessibility_available"
+                    ]
+            }
+        }
+
+    except HTTPException:
+        raise
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=str(e)
+        )
+
+    except Exception as e:
         raise HTTPException(
             status_code=500,
             detail=str(e)
@@ -85,15 +163,12 @@ def analyze_location(
     locality: str
 ):
 
-    location_data = (
-        get_location_intelligence(
-            city,
-            locality
-        )
+    location_data = get_location_intelligence(
+        city,
+        locality
     )
 
     if location_data is None:
-
         raise HTTPException(
             status_code=404,
             detail=(

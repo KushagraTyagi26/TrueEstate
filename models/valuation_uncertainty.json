@@ -1,0 +1,38 @@
+{
+  "method": "prediction_conditional_signed_residuals",
+  "coverage": 0.80,
+  "lower_quantile": 0.10,
+  "upper_quantile": 0.90,
+
+  "bands": {
+    "under_20k": {
+      "max_predicted_rent": 20000,
+      "q10_residual": -6956.94,
+      "median_residual": -396.01,
+      "q90_residual": 7739.73
+    },
+
+    "20k_50k": {
+      "min_predicted_rent": 20000,
+      "max_predicted_rent": 50000,
+      "q10_residual": -14637.02,
+      "median_residual": -1962.29,
+      "q90_residual": 14585.33
+    },
+
+    "50k_1l": {
+      "min_predicted_rent": 50000,
+      "max_predicted_rent": 100000,
+      "q10_residual": -29969.19,
+      "median_residual": -5407.85,
+      "q90_residual": 29411.62
+    },
+
+    "over_1l": {
+      "min_predicted_rent": 100000,
+      "q10_residual": -93083.96,
+      "median_residual": -8423.03,
+      "q90_residual": 91786.42
+    }
+  }
+}
