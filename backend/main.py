@@ -1,19 +1,21 @@
 from fastapi import FastAPI, HTTPException
 
-from schemas import PropertyInput
+from schemas import PropertyInput, RecommendationInput
 from model_service import predict_rent
 from location_service import get_location_intelligence
 from valuation_service import evaluate_price
 from value_service import calculate_value_score
+from recommendation_service import recommend_localities
 
 
 app = FastAPI(
     title="TrueEstate API",
     description=(
         "AI-powered rental price, valuation, "
-        "value-for-money, and location intelligence API"
+        "value-for-money, recommendation, "
+        "and location intelligence API"
     ),
-    version="2.2.0"
+    version="2.3.0"
 )
 
 
@@ -26,7 +28,7 @@ def root():
     return {
         "message": "TrueEstate API is running",
         "status": "success",
-        "version": "2.2.0"
+        "version": "2.3.0"
     }
 
 
@@ -172,6 +174,38 @@ def evaluate_property(property_data: PropertyInput):
 
     except HTTPException:
         raise
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=str(e)
+        )
+
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+
+# ============================================================
+# LOCALITY RECOMMENDATIONS
+# ============================================================
+
+@app.post("/recommend")
+def recommend(
+    recommendation_data: RecommendationInput
+):
+
+    try:
+        result = recommend_localities(
+            recommendation_data.model_dump()
+        )
+
+        return {
+            "status": "success",
+            **result
+        }
 
     except ValueError as e:
         raise HTTPException(
