@@ -1,6 +1,8 @@
 import type { PropertyInput } from "./types"
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://trueestate-backend-dmtj.onrender.com"
 
 if (!API_URL) {
   throw new Error("NEXT_PUBLIC_API_URL is not defined")
