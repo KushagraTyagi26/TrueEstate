@@ -1,4 +1,4 @@
-'use client'
+
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -7,11 +7,13 @@ import { supabase } from '@/lib/supabase'
 import {
   ArrowRight,
   Check,
+  ChevronDown,
   GraduationCap,
   Hospital,
   House,
   Menu,
   LogOut,
+  Search,
   ShoppingBag,
   Sparkles,
   Train,
@@ -19,6 +21,7 @@ import {
 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { LOCALITIES_BY_CITY } from '@/lib/localities'
 
 import {
   defaultProperty,
@@ -424,6 +427,15 @@ export function PropertyForm({
 }) {
   const [property, setProperty] =
     useState<PropertyInput>(initial)
+  const [localityOpen, setLocalityOpen] = useState(false)
+  const [localitySearch, setLocalitySearch] = useState('')
+
+  const localities =
+    LOCALITIES_BY_CITY[property.city] ?? []
+
+  const filteredLocalities = localities.filter((locality) =>
+    locality.toLowerCase().includes(localitySearch.trim().toLowerCase())
+  )
 
   const update = (
     key: keyof PropertyInput,
@@ -448,12 +460,19 @@ export function PropertyForm({
           City
           <select
             value={property.city}
-            onChange={(event) =>
-              update(
-                'city',
+            onChange={(event) => {
+              const nextCity =
                 event.target.value as PropertyInput['city']
-              )
-            }
+
+              setProperty((current) => ({
+                ...current,
+                city: nextCity,
+                locality:
+                  LOCALITIES_BY_CITY[nextCity]?.[0] ?? '',
+              }))
+              setLocalitySearch('')
+              setLocalityOpen(false)
+            }}
           >
             <option>Bangalore</option>
             <option>Mumbai</option>
@@ -463,12 +482,92 @@ export function PropertyForm({
 
         <label>
           Locality
-          <input
-            value={property.locality}
-            onChange={(event) =>
-              update('locality', event.target.value)
-            }
-          />
+
+          <div
+            className="relative mt-1"
+            onBlur={(event) => {
+              if (
+                !event.currentTarget.contains(
+                  event.relatedTarget as Node | null
+                )
+              ) {
+                setLocalityOpen(false)
+                setLocalitySearch('')
+              }
+            }}
+          >
+            <button
+              type="button"
+              onClick={() =>
+                setLocalityOpen((current) => !current)
+              }
+              className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 text-left text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+            >
+              <span className="truncate">
+                {property.locality || 'Select locality'}
+              </span>
+
+              <ChevronDown
+                className={`size-4 shrink-0 text-muted-foreground transition-transform ${
+                  localityOpen ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+
+            {localityOpen && (
+              <div className="absolute left-0 top-full z-[80] mt-2 w-full overflow-hidden rounded-md border border-border bg-card shadow-xl">
+                <div className="border-b border-border p-2">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+
+                    <input
+                      autoFocus
+                      type="text"
+                      value={localitySearch}
+                      onChange={(event) =>
+                        setLocalitySearch(event.target.value)
+                      }
+                      placeholder={`Search ${property.city} localities...`}
+                      className="h-9 w-full rounded-md border border-input bg-background pl-9 pr-3 text-sm outline-none focus:border-primary"
+                    />
+                  </div>
+                </div>
+
+                <div className="max-h-64 overflow-y-auto py-1">
+                  {filteredLocalities.length > 0 ? (
+                    filteredLocalities.map((locality) => (
+                      <button
+                        key={locality}
+                        type="button"
+                        onClick={() => {
+                          update('locality', locality)
+                          setLocalityOpen(false)
+                          setLocalitySearch('')
+                        }}
+                        className={`flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm transition hover:bg-muted ${
+                          property.locality === locality
+                            ? 'bg-primary/5 font-medium text-primary'
+                            : 'text-foreground'
+                        }`}
+                      >
+                        <span className="truncate">
+                          {locality}
+                        </span>
+
+                        {property.locality === locality && (
+                          <Check className="size-4 shrink-0" />
+                        )}
+                      </button>
+                    ))
+                  ) : (
+                    <p className="px-3 py-4 text-center text-sm text-muted-foreground">
+                      No localities found.
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </label>
 
         <label>
@@ -949,3 +1048,4 @@ export {
   defaultProperty,
   formatINR,
 }
+
