@@ -53,26 +53,68 @@ export default function SignupPage() {
     setMessage('')
     setError('')
 
+    const withTimeout = async <T,>(
+      promise: Promise<T>,
+      timeoutMs = 10000
+    ): Promise<T> => {
+      let timeoutId: ReturnType<typeof setTimeout> | undefined
+
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => {
+          reject(new Error('Authentication request timed out. Please try again.'))
+        }, timeoutMs)
+      })
+
+      try {
+        return await Promise.race([promise, timeoutPromise])
+      } finally {
+        if (timeoutId) clearTimeout(timeoutId)
+      }
+    }
+
     try {
       if (isSignup) {
-        const { error: authError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { data: { full_name: name } },
-        })
+        const { error: authError } = await withTimeout(
+          supabase.auth.signUp({
+            email,
+            password,
+            options: { data: { full_name: name } },
+          })
+        )
+
         if (authError) throw authError
-        setMessage('Account created. Check your email to confirm your account, then sign in.')
+
+        setMessage(
+          'Account created. Check your email to confirm your account, then sign in.'
+        )
       } else {
-        const { error: authError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        })
+        const {
+          data,
+          error: authError,
+        } = await withTimeout(
+          supabase.auth.signInWithPassword({
+            email,
+            password,
+          })
+        )
+
         if (authError) throw authError
-        router.push('/')
-        router.refresh()
+
+        if (!data.session) {
+          throw new Error('Sign in succeeded but no active session was returned.')
+        }
+
+        // Use a full page navigation so the homepage gets the fresh Supabase
+        // session immediately instead of depending on a client router refresh.
+        window.location.assign('/')
+        return
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
+      setError(
+        err instanceof Error
+          ? err.message
+          : 'Something went wrong. Please try again.'
+      )
     } finally {
       setLoading(false)
     }
