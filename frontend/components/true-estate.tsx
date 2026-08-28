@@ -344,40 +344,27 @@ export function AccessibilityPanel({
   ] as const
 
   return (
-    <section className="rounded-xl border border-border bg-card p-5">
-      <div className="mb-5 flex items-end justify-between">
+    <section className="rounded-2xl border border-border bg-card p-6 shadow-[0_14px_40px_-34px_rgba(23,77,58,.35)]">
+      <div className="mb-6 flex items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-medium">Accessibility</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Nearby essentials and transit
-          </p>
+          <h2 className="text-lg font-semibold tracking-[-0.02em]">Accessibility</h2>
+          <p className="mt-1 text-xs text-muted-foreground">Nearby essentials and transit</p>
         </div>
-
-        <strong className="text-2xl tracking-tight text-primary">
+        <strong className="whitespace-nowrap text-2xl font-semibold tracking-tight text-primary">
           {data.score.toFixed(2)}
-          <span className="text-sm font-normal text-muted-foreground">
-            {' '}/ 10
-          </span>
+          <span className="ml-1 text-sm font-normal text-muted-foreground">/ 10</span>
         </strong>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid gap-4">
         {items.map(([Icon, label, value]) => (
-          <div
-            key={label}
-            className="flex items-center gap-3"
-          >
-            <span className="grid size-8 place-items-center rounded-lg bg-muted text-primary">
-              <Icon className="size-4" />
+          <div key={label} className="flex items-center gap-4">
+            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-[#f0f3ec] text-primary">
+              <Icon className="size-5" />
             </span>
-
             <div>
-              <p className="text-xs text-muted-foreground">
-                {label}
-              </p>
-              <p className="text-sm font-medium">
-                {formatDistance(value)}
-              </p>
+              <p className="text-sm text-muted-foreground">{label}</p>
+              <p className="mt-0.5 text-base font-semibold text-foreground">{formatDistance(value)}</p>
             </div>
           </div>
         ))}
@@ -433,27 +420,20 @@ export function PropertyForm({
   onSubmit: (property: PropertyInput) => void
   submitLabel?: string
 }) {
-  const [property, setProperty] =
-    useState<PropertyInput>(initial)
+  const [property, setProperty] = useState<PropertyInput>(initial)
   const [localityOpen, setLocalityOpen] = useState(false)
   const [localitySearch, setLocalitySearch] = useState('')
 
-  const localities =
-    LOCALITIES_BY_CITY[property.city] ?? []
-
+  const localities = LOCALITIES_BY_CITY[property.city] ?? []
   const filteredLocalities = localities.filter((locality) =>
     locality.toLowerCase().includes(localitySearch.trim().toLowerCase())
   )
 
-  const update = (
-    key: keyof PropertyInput,
-    value: string | number
-  ) => {
-    setProperty({
-      ...property,
-      [key]: value,
-    })
+  const update = (key: keyof PropertyInput, value: string | number) => {
+    setProperty({ ...property, [key]: value })
   }
+
+  const fieldClass = 'h-11 rounded-lg border border-input bg-[#fffefa] px-3 text-sm transition focus:border-primary focus:ring-2 focus:ring-primary/10'
 
   return (
     <form
@@ -461,22 +441,22 @@ export function PropertyForm({
         event.preventDefault()
         onSubmit(property)
       }}
-      className="flex flex-col gap-5 rounded-xl border border-border bg-card p-5 md:p-6"
+      className="rounded-2xl border border-border bg-card p-5 shadow-[0_14px_40px_-34px_rgba(23,77,58,.35)] md:p-6"
     >
-      <div className="grid gap-5 sm:grid-cols-2">
+      <h2 className="mb-6 text-lg font-semibold tracking-[-0.02em]">Property Details</h2>
+
+      <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2">
         <label>
           City
           <select
+            className={fieldClass}
             value={property.city}
             onChange={(event) => {
-              const nextCity =
-                event.target.value as PropertyInput['city']
-
+              const nextCity = event.target.value as PropertyInput['city']
               setProperty((current) => ({
                 ...current,
                 city: nextCity,
-                locality:
-                  LOCALITIES_BY_CITY[nextCity]?.[0] ?? '',
+                locality: LOCALITIES_BY_CITY[nextCity]?.[0] ?? '',
               }))
               setLocalitySearch('')
               setLocalityOpen(false)
@@ -490,15 +470,10 @@ export function PropertyForm({
 
         <label>
           Locality
-
           <div
-            className="relative mt-1"
+            className="relative"
             onBlur={(event) => {
-              if (
-                !event.currentTarget.contains(
-                  event.relatedTarget as Node | null
-                )
-              ) {
+              if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
                 setLocalityOpen(false)
                 setLocalitySearch('')
               }
@@ -506,71 +481,45 @@ export function PropertyForm({
           >
             <button
               type="button"
-              onClick={() =>
-                setLocalityOpen((current) => !current)
-              }
-              className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 text-left text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              onClick={() => setLocalityOpen((current) => !current)}
+              className={`${fieldClass} flex w-full items-center justify-between text-left`}
             >
-              <span className="truncate">
-                {property.locality || 'Select locality'}
-              </span>
-
-              <ChevronDown
-                className={`size-4 shrink-0 text-muted-foreground transition-transform ${
-                  localityOpen ? 'rotate-180' : ''
-                }`}
-              />
+              <span className="truncate">{property.locality || 'Select locality'}</span>
+              <ChevronDown className={`size-4 shrink-0 text-muted-foreground transition-transform ${localityOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {localityOpen && (
-              <div className="absolute left-0 top-full z-[80] mt-2 w-full overflow-hidden rounded-md border border-border bg-card shadow-xl">
+              <div className="absolute left-0 top-full z-[80] mt-2 w-full overflow-hidden rounded-xl border border-border bg-card shadow-xl">
                 <div className="border-b border-border p-2">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-
                     <input
                       autoFocus
                       type="text"
                       value={localitySearch}
-                      onChange={(event) =>
-                        setLocalitySearch(event.target.value)
-                      }
+                      onChange={(event) => setLocalitySearch(event.target.value)}
                       placeholder={`Search ${property.city} localities...`}
-                      className="h-9 w-full rounded-md border border-input bg-background pl-9 pr-3 text-sm outline-none focus:border-primary"
+                      className="h-10 w-full rounded-lg border border-input bg-[#fffefa] pl-9 pr-3 text-sm outline-none focus:border-primary"
                     />
                   </div>
                 </div>
-
                 <div className="max-h-64 overflow-y-auto py-1">
-                  {filteredLocalities.length > 0 ? (
-                    filteredLocalities.map((locality) => (
-                      <button
-                        key={locality}
-                        type="button"
-                        onClick={() => {
-                          update('locality', locality)
-                          setLocalityOpen(false)
-                          setLocalitySearch('')
-                        }}
-                        className={`flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm transition hover:bg-muted ${
-                          property.locality === locality
-                            ? 'bg-primary/5 font-medium text-primary'
-                            : 'text-foreground'
-                        }`}
-                      >
-                        <span className="truncate">
-                          {locality}
-                        </span>
-
-                        {property.locality === locality && (
-                          <Check className="size-4 shrink-0" />
-                        )}
-                      </button>
-                    ))
-                  ) : (
-                    <p className="px-3 py-4 text-center text-sm text-muted-foreground">
-                      No localities found.
-                    </p>
+                  {filteredLocalities.length > 0 ? filteredLocalities.map((locality) => (
+                    <button
+                      key={locality}
+                      type="button"
+                      onClick={() => {
+                        update('locality', locality)
+                        setLocalityOpen(false)
+                        setLocalitySearch('')
+                      }}
+                      className={`flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left text-sm transition hover:bg-muted ${property.locality === locality ? 'bg-primary/5 font-medium text-primary' : 'text-foreground'}`}
+                    >
+                      <span className="truncate">{locality}</span>
+                      {property.locality === locality && <Check className="size-4 shrink-0" />}
+                    </button>
+                  )) : (
+                    <p className="px-3 py-4 text-center text-sm text-muted-foreground">No localities found.</p>
                   )}
                 </div>
               </div>
@@ -579,121 +528,55 @@ export function PropertyForm({
         </label>
 
         <label>
-          Area in sqft
-          <input
-            type="number"
-            min="200"
-            value={property.area}
-            onChange={(event) =>
-              update('area', +event.target.value)
-            }
-          />
+          Property Type
+          <select className={fieldClass} value={property.propertyType} onChange={(event) => update('propertyType', event.target.value as PropertyInput['propertyType'])}>
+            <option>Flat</option><option>House</option><option>Villa</option>
+          </select>
+        </label>
+
+        <label>
+          Area (sq ft)
+          <input className={fieldClass} type="number" min="200" value={property.area} onChange={(event) => update('area', +event.target.value)} />
         </label>
 
         <label>
           Bedrooms
-          <select
-            value={property.bedrooms}
-            onChange={(event) =>
-              update('bedrooms', +event.target.value)
-            }
-          >
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
+          <select className={fieldClass} value={property.bedrooms} onChange={(event) => update('bedrooms', +event.target.value)}>
+            <option>1</option><option>2</option><option>3</option><option>4</option>
           </select>
         </label>
 
         <label>
           Bathrooms
-          <select
-            value={property.bathrooms}
-            onChange={(event) =>
-              update('bathrooms', +event.target.value)
-            }
-          >
-            <option>0</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
+          <select className={fieldClass} value={property.bathrooms} onChange={(event) => update('bathrooms', +event.target.value)}>
+            <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option>
           </select>
         </label>
 
         <label>
           Balconies
-          <select
-            value={property.balconies}
-            onChange={(event) =>
-              update('balconies', +event.target.value)
-            }
-          >
-            <option>0</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
+          <select className={fieldClass} value={property.balconies} onChange={(event) => update('balconies', +event.target.value)}>
+            <option>0</option><option>1</option><option>2</option><option>3</option>
           </select>
         </label>
 
-        <label>
+        <label className="sm:col-span-2">
           Furnishing
-          <select
-            value={property.furnishing}
-            onChange={(event) =>
-              update(
-                'furnishing',
-                event.target.value as PropertyInput['furnishing']
-              )
-            }
-          >
-            <option>Furnished</option>
-            <option>Semi-Furnished</option>
-            <option>Unfurnished</option>
-          </select>
-        </label>
-
-        <label>
-          Property Type
-          <select
-            value={property.propertyType}
-            onChange={(event) =>
-              update(
-                'propertyType',
-                event.target.value as PropertyInput['propertyType']
-              )
-            }
-          >
-            <option>Flat</option>
-            <option>House</option>
-            <option>Villa</option>
+          <select className={fieldClass} value={property.furnishing} onChange={(event) => update('furnishing', event.target.value as PropertyInput['furnishing'])}>
+            <option>Furnished</option><option>Semi-Furnished</option><option>Unfurnished</option>
           </select>
         </label>
 
         {showAsking && (
-          <label>
-            Asking Rent
-            <input
-              type="number"
-              min="1"
-              value={property.askingRent ?? ''}
-              onChange={(event) =>
-                update(
-                  'askingRent',
-                  +event.target.value
-                )
-              }
-            />
+          <label className="sm:col-span-2">
+            Asking Rent (Monthly)
+            <input className={fieldClass} type="number" min="1" value={property.askingRent ?? ''} onChange={(event) => update('askingRent', +event.target.value)} />
           </label>
         )}
       </div>
 
-      <Button
-        type="submit"
-        className="w-full"
-      >
-        {submitLabel}
-        <ArrowRight className="size-4" />
+      <Button type="submit" className="mt-6 h-11 w-full rounded-lg bg-primary text-primary-foreground hover:bg-[#123f30]">
+        {submitLabel}<ArrowRight className="size-4" />
       </Button>
     </form>
   )
@@ -705,83 +588,53 @@ export function ExpectedRangeBar({
 }: {
   evaluation: Evaluation
 }) {
-  const span = Math.max(
-    evaluation.upperBound - evaluation.lowerBound,
-    1
-  )
-
-  const position = Math.min(
-    94,
-    Math.max(
-      6,
-      (
-        (evaluation.askingRent - evaluation.lowerBound)
-        / span
-      ) * 100
-    )
-  )
+  const span = Math.max(evaluation.upperBound - evaluation.lowerBound, 1)
+  const clamp = (n: number) => Math.min(96, Math.max(4, n))
+  const fairPosition = clamp(((evaluation.estimatedRent - evaluation.lowerBound) / span) * 100)
+  const askingPosition = clamp(((evaluation.askingRent - evaluation.lowerBound) / span) * 100)
+  const askingAboveFair = evaluation.askingRent > evaluation.estimatedRent
 
   return (
-    <div className="rounded-xl border border-border bg-card p-5 md:p-6">
-      <div className="mb-7 flex items-center justify-between">
+    <section className="rounded-2xl border border-border bg-card p-6 shadow-[0_14px_40px_-34px_rgba(23,77,58,.35)]">
+      <h2 className="text-lg font-semibold tracking-[-0.02em]">Expected Rent Range</h2>
+
+      <div className="mt-7 grid grid-cols-3 text-sm">
         <div>
-          <p className="text-sm font-medium">
-            Expected rent range
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Based on validation-calibrated market signals
-          </p>
+          <p className="font-semibold">{formatINR(evaluation.lowerBound)}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Lower Bound</p>
         </div>
-
-        <span className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
-          {evaluation.status}
-        </span>
-      </div>
-
-      <div className="relative pt-5">
-        <div className="h-2 rounded-full bg-secondary">
-          <div className="h-2 w-[58%] rounded-full bg-primary/70" />
+        <div className="text-center">
+          <p className="font-semibold">{formatINR(evaluation.estimatedRent)}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Fair Rent</p>
         </div>
-
-        <div
-          className="absolute top-0 -translate-x-1/2"
-          style={{
-            left: `${position}%`,
-          }}
-        >
-          <div className="mx-auto size-3 rounded-full border-2 border-card bg-primary ring-2 ring-primary/20" />
-          <p className="mt-2 whitespace-nowrap text-xs font-semibold">
-            Asking {formatINR(evaluation.askingRent)}
-          </p>
+        <div className="text-right">
+          <p className="font-semibold">{formatINR(evaluation.upperBound)}</p>
+          <p className="mt-1 text-xs text-muted-foreground">Upper Bound</p>
         </div>
       </div>
 
-      <div className="mt-12 flex justify-between text-xs text-muted-foreground">
-        <span>
-          {formatINR(evaluation.lowerBound)}
-          <br />
-          <span className="text-[10px]">
-            Lower bound
-          </span>
-        </span>
+      <div className="relative mt-4 h-[86px]">
+        <div className="absolute left-0 right-0 top-2 h-2 rounded-full bg-[#e8e9e3]" />
+        <div className="absolute left-0 top-2 h-2 rounded-full bg-[#17613e] transition-[width] duration-700 ease-out" style={{ width: `${fairPosition}%` }} />
+        {askingAboveFair ? (
+          <div className="absolute top-2 h-2 rounded-r-full bg-[#df2b23] transition-all duration-700 ease-out" style={{ left: `${askingPosition}%`, right: 0 }} />
+        ) : (
+          <div className="absolute left-0 top-2 h-2 rounded-l-full bg-[#17613e] transition-all duration-700 ease-out" style={{ width: `${askingPosition}%` }} />
+        )}
 
-        <span className="text-center">
-          {formatINR(evaluation.estimatedRent)}
-          <br />
-          <span className="text-[10px]">
-            Fair rent
-          </span>
-        </span>
+        <div className="absolute top-0 -translate-x-1/2 transition-all duration-700 ease-out" style={{ left: `${fairPosition}%` }}>
+          <span className="block size-5 rounded-full border-[4px] border-card bg-[#17613e] shadow-[0_0_0_1px_rgba(23,97,62,.2)]" />
+        </div>
 
-        <span className="text-right">
-          {formatINR(evaluation.upperBound)}
-          <br />
-          <span className="text-[10px]">
-            Upper bound
-          </span>
-        </span>
+        <div className="absolute top-0 -translate-x-1/2 transition-all duration-700 ease-out" style={{ left: `${askingPosition}%` }}>
+          <div className="mx-auto h-12 border-l-2 border-dashed border-[#df2b23]" />
+          <div className="mt-1 -translate-x-1/2 whitespace-nowrap text-center text-[#d8231a]">
+            <p className="text-base font-bold">{formatINR(evaluation.askingRent)}</p>
+            <p className="text-xs font-semibold">Asking Rent</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
 
@@ -791,73 +644,57 @@ export function ValueScoreCard({
 }: {
   evaluation: Evaluation
 }) {
-  const scores = [
-    [
-      'Price Fairness',
-      evaluation.priceFairness,
-      '55%',
-    ],
-    [
-      'Accessibility',
-      evaluation.accessibility.score,
-      '25%',
-    ],
-    [
-      'Market Position',
-      evaluation.marketPosition,
-      '20%',
-    ],
+  const score = Math.max(0, Math.min(10, evaluation.valueScore))
+  const labelTone = score >= 8 ? 'text-[#17613e]' : score >= 6 ? 'text-[#b77700]' : 'text-[#c9382d]'
+  const description = evaluation.status === 'Above Expected Range'
+    ? 'This listing is priced above the expected market range.'
+    : evaluation.status === 'Below Expected Range'
+      ? 'This listing is priced below the expected market range.'
+      : 'This listing is priced close to the expected market range.'
+
+  const metrics = [
+    ['Price Fairness', evaluation.priceFairness, 'text-[#d92d20]'],
+    ['Market Position', evaluation.marketPosition, 'text-[#b77700]'],
+    ['Accessibility', evaluation.accessibility.score, 'text-[#17613e]'],
   ] as const
 
   return (
-    <section className="rounded-xl border border-border bg-card p-5 md:p-6">
-      <div className="flex items-end justify-between">
-        <div>
-          <p className="text-sm font-medium">
-            Value for money
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            A weighted decision score
-          </p>
-        </div>
+    <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_14px_40px_-34px_rgba(23,77,58,.35)]">
+      <div className="p-6">
+        <h2 className="text-lg font-semibold tracking-[-0.02em]">Value Score</h2>
 
-        <div className="text-right">
-          <strong className="text-3xl tracking-tight text-primary">
-            {evaluation.valueScore.toFixed(1)}
-          </strong>
-          <span className="text-sm text-muted-foreground">
-            {' '}/ 10
-          </span>
-          <p className="text-xs text-muted-foreground">
-            {evaluation.valueLabel}
-          </p>
+        <div className="mt-6 grid items-center gap-7 md:grid-cols-[190px_1fr]">
+          <div className="flex justify-center">
+            <div className="relative grid size-[166px] place-items-center rounded-full" style={{ background: 'conic-gradient(#17613e 0deg 108deg, #6f9a78 108deg 190deg, #a9c3ad 190deg 260deg, #f0d279 260deg 360deg)' }}>
+              <div className="absolute inset-[12px] rounded-full bg-card" />
+              <div className="relative text-center">
+                <strong className="block text-4xl font-semibold tracking-[-0.04em] text-[#174d3a]">{score.toFixed(1)}</strong>
+                <span className="text-base text-foreground">/10</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h3 className={`text-xl font-semibold ${labelTone}`}>{evaluation.valueLabel}</h3>
+            <p className="mt-3 max-w-sm text-sm leading-6 text-foreground">{description}</p>
+
+            <div className="mt-7">
+              <div className="h-2 rounded-full bg-[#e7e7e2]">
+                <div className="h-2 rounded-full bg-gradient-to-r from-[#e02016] via-[#e6b44b] to-[#17613e] transition-[width] duration-700" style={{ width: `${score * 10}%` }} />
+              </div>
+              <div className="mt-2 flex justify-between text-[11px] text-muted-foreground">
+                <span>Poor 0</span><span>Average 5</span><span>Excellent 10</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="mt-7 flex flex-col gap-5">
-        {scores.map(([label, score, weight]) => (
-          <div key={label}>
-            <div className="mb-2 flex justify-between text-xs">
-              <span>{label}</span>
-              <span className="text-muted-foreground">
-                {Number(score).toFixed(2)}
-                <span className="ml-2 text-[10px]">
-                  {weight}
-                </span>
-              </span>
-            </div>
-
-            <div className="h-1.5 rounded-full bg-secondary">
-              <div
-                className="h-1.5 rounded-full bg-primary"
-                style={{
-                  width: `${Math.min(
-                    Number(score) * 10,
-                    100
-                  )}%`,
-                }}
-              />
-            </div>
+      <div className="grid grid-cols-3 border-t border-border bg-[#fffefa]">
+        {metrics.map(([label, value, tone], index) => (
+          <div key={label} className={`px-4 py-4 text-center ${index > 0 ? 'border-l border-border' : ''}`}>
+            <p className="text-xs text-muted-foreground">{label}</p>
+            <p className={`mt-1 text-xl font-semibold ${tone}`}>{Number(value).toFixed(1)}<span className="ml-1 text-sm font-normal text-foreground">/ 10</span></p>
           </div>
         ))}
       </div>

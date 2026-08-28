@@ -6,9 +6,7 @@ import AuthGuard from '@/components/auth-guard'
 import {
   Navbar,
   Footer,
-  PageHeader,
   PropertyForm,
-  MetricCard,
   ExpectedRangeBar,
   ValueScoreCard,
   AccessibilityPanel,
@@ -170,156 +168,125 @@ export default function EvaluatePage() {
       ).toLocaleString('en-IN')}`
     : ''
 
-  const differenceDetail = result
-    ? `${result.differencePercent >= 0 ? '+' : ''}${result.differencePercent.toFixed(
-        2
-      )}% ${
-        result.differencePercent >= 0
-          ? 'above estimate'
-          : 'below estimate'
-      }`
+  const statusStyle = result
+    ? result.status === 'Above Expected Range'
+      ? 'bg-[#fde7e2] text-[#d92d20]'
+      : result.status === 'Below Expected Range'
+        ? 'bg-[#e2f0e7] text-[#17613e]'
+        : 'bg-[#e3ede7] text-[#17613e]'
     : ''
 
   return (
     <AuthGuard>
       <>
-      <Navbar />
+        <Navbar />
 
-      <main className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
-        <PageHeader
-          eyebrow="Evaluate a listing"
-          title="Is this property actually worth the asking rent?"
-          description="Get the full picture before you negotiate or commit: fair rent, expected range, value-for-money, and locality intelligence."
-        />
-
-        <div className="grid gap-8 lg:grid-cols-[.78fr_1.22fr]">
-          <div>
-            <PropertyForm
-              onSubmit={submit}
-              submitLabel={
-                loading
-                  ? 'Evaluating…'
-                  : 'Evaluate Listing'
-              }
-            />
-
-            {error && (
-              <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-                {error}
-              </div>
-            )}
-
-            <p className="mt-4 text-xs leading-5 text-muted-foreground">
-              We never replace your judgment. We make the
-              signals behind it easier to understand.
+        <main className="mx-auto max-w-[1500px] px-5 pb-16 pt-8 lg:px-8 lg:pb-20 lg:pt-10">
+          <div className="mb-7 max-w-[610px]">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-primary">Evaluate Listing</p>
+            <h1 className="font-serif-display text-[38px] font-semibold leading-[1.12] tracking-[-0.035em] text-foreground md:text-[46px]">
+              Is this property actually<br className="hidden sm:block" /> worth the asking rent?
+            </h1>
+            <p className="mt-4 max-w-xl text-[15px] leading-7 text-muted-foreground">
+              Get a complete evaluation with market comparison, price fairness, and accessibility insights.
             </p>
           </div>
 
-          {result ? (
-            <div className="flex flex-col gap-5">
-              <div className="grid gap-4 sm:grid-cols-3">
-                <MetricCard
-                  label="Asking rent"
-                  value={`₹${result.askingRent.toLocaleString(
-                    'en-IN'
-                  )}`}
-                />
-
-                <MetricCard
-                  label="TrueEstate fair rent"
-                  value={`₹${result.estimatedRent.toLocaleString(
-                    'en-IN'
-                  )}`}
-                  accent
-                />
-
-                <MetricCard
-                  label="Difference"
-                  value={differenceValue}
-                  detail={differenceDetail}
-                />
-              </div>
-
-              <ExpectedRangeBar
-                evaluation={result}
+          <div className="grid items-start gap-5 xl:grid-cols-[408px_minmax(0,1fr)_370px]">
+            <div>
+              <PropertyForm
+                onSubmit={submit}
+                submitLabel={loading ? 'Evaluating…' : 'Evaluate Listing'}
               />
 
-              <div className="grid gap-5 md:grid-cols-2">
-                <ValueScoreCard
-                  evaluation={result}
-                />
-
-                <AccessibilityPanel
-                  data={result.accessibility}
-                />
-              </div>
-
-              <section className="rounded-xl border border-border bg-card p-5">
-                <p className="text-sm font-medium">
-                  Market intelligence
-                </p>
-
-                <div className="mt-5 grid grid-cols-2 gap-4 text-sm sm:grid-cols-3">
-                  {[
-                    [
-                      'Predicted rate',
-                      `₹${result.predictedRate}/sqft`,
-                    ],
-                    [
-                      'Asking rate',
-                      `₹${result.askingRate}/sqft`,
-                    ],
-                    [
-                      'Locality market',
-                      `₹${result.localityRate}/sqft`,
-                    ],
-                    [
-                      'Locality + BHK',
-                      `₹${result.bedroomRate}/sqft`,
-                    ],
-                    [
-                      'Accessibility',
-                      `${result.accessibility.score}/10`,
-                    ],
-                    [
-                      'Position',
-                      result.status,
-                    ],
-                  ].map(([label, value]) => (
-                    <div key={label}>
-                      <p className="text-xs text-muted-foreground">
-                        {label}
-                      </p>
-                      <p className="mt-1 font-medium">
-                        {value}
-                      </p>
-                    </div>
-                  ))}
+              {error && (
+                <div className="mt-4 rounded-xl border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
+                  {error}
                 </div>
-              </section>
-
-              <div className="border-l-2 border-primary/50 px-5 py-1 text-sm leading-7 text-muted-foreground">
-                {result.interpretation}
-              </div>
+              )}
             </div>
-          ) : (
-            <div className="grid min-h-[520px] place-items-center rounded-xl border border-dashed border-border bg-card/50 p-8 text-center">
-              <div>
-                <h2 className="font-medium">
-                  Your valuation dashboard will appear here
-                </h2>
 
-                <p className="mt-2 max-w-xs text-sm leading-6 text-muted-foreground">
-                  Add the asking rent to unlock the full
-                  TrueEstate analysis.
-                </p>
+            {result ? (
+              <>
+                <div className="flex min-w-0 flex-col gap-5">
+                  <section className="rounded-2xl border border-border bg-card p-6 shadow-[0_14px_40px_-34px_rgba(23,77,58,.35)]">
+                    <div className="flex items-start justify-between gap-5">
+                      <div>
+                        <p className="text-sm text-foreground">Fair Rent (Estimated)</p>
+                        <p className="mt-2 text-[34px] font-semibold leading-none tracking-[-0.035em] text-primary">
+                          ₹{result.estimatedRent.toLocaleString('en-IN')}
+                        </p>
+                      </div>
+                      <span className={`rounded-xl px-3 py-1.5 text-sm font-medium ${statusStyle}`}>
+                        {result.status === 'Above Expected Range'
+                          ? 'Overpriced'
+                          : result.status === 'Below Expected Range'
+                            ? 'Good Deal'
+                            : 'Within Expected Range'}
+                      </span>
+                    </div>
+
+                    <div className="mt-7 grid grid-cols-2 gap-5">
+                      <div>
+                        <p className="text-xs text-muted-foreground">Expected Range</p>
+                        <p className="mt-2 text-base font-semibold">
+                          ₹{result.lowerBound.toLocaleString('en-IN')} – ₹{result.upperBound.toLocaleString('en-IN')}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-muted-foreground">Difference</p>
+                        <p className={`mt-2 text-base font-semibold ${result.difference > 0 ? 'text-[#d92d20]' : 'text-[#17613e]'}`}>
+                          {differenceValue} ({result.differencePercent >= 0 ? '+' : ''}{result.differencePercent.toFixed(2)}%)
+                        </p>
+                      </div>
+                    </div>
+                  </section>
+
+                  <ValueScoreCard evaluation={result} />
+                  <ExpectedRangeBar evaluation={result} />
+                </div>
+
+                <div className="flex min-w-0 flex-col gap-5">
+                  <AccessibilityPanel data={result.accessibility} />
+
+                  <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_14px_40px_-34px_rgba(23,77,58,.35)]">
+                    <div className="border-b border-border px-6 py-5">
+                      <h2 className="text-lg font-semibold tracking-[-0.02em]">Market Intelligence</h2>
+                    </div>
+
+                    <div className="grid grid-cols-2">
+                      {[
+                        ['Predicted Rate', `₹${result.predictedRate} / sq ft`, ''],
+                        ['Asking Rate', `₹${result.askingRate} / sq ft`, ''],
+                        ['Locality Market Rate', `₹${result.localityRate} / sq ft`, ''],
+                        ['Locality + BHK Rate', `₹${result.bedroomRate} / sq ft`, ''],
+                        ['Accessibility Score', `${result.accessibility.score.toFixed(2)} / 10`, 'text-[#17613e]'],
+                        ['Price Position', result.status === 'Above Expected Range' ? 'Overpriced' : result.status === 'Below Expected Range' ? 'Good Deal' : 'Within Expected Range', result.status === 'Above Expected Range' ? 'text-[#e02219]' : 'text-[#17613e]'],
+                      ].map(([label, value, tone], index) => (
+                        <div key={label} className={`min-h-[92px] px-6 py-5 ${index >= 2 ? 'border-t border-border' : ''} ${index % 2 === 1 ? 'border-l border-border' : ''}`}>
+                          <p className="text-xs text-muted-foreground">{label}</p>
+                          <p className={`mt-2 text-base font-semibold leading-5 ${tone}`}>{value}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                </div>
+              </>
+            ) : (
+              <div className="xl:col-span-2 grid min-h-[560px] place-items-center rounded-2xl border border-dashed border-border bg-card/55 p-8 text-center">
+                <div>
+                  <div className="mx-auto mb-4 grid size-12 place-items-center rounded-full bg-accent text-primary">₹</div>
+                  <h2 className="font-medium">Your valuation dashboard will appear here</h2>
+                  <p className="mt-2 max-w-xs text-sm leading-6 text-muted-foreground">
+                    Add the asking rent to unlock the full TrueEstate analysis.
+                  </p>
+                </div>
               </div>
-            </div>
-          )}
-        </div>
-      </main>
+            )}
+          </div>
+        </main>
 
-      <Footer />
+        <Footer />
       </>
     </AuthGuard>
   )
