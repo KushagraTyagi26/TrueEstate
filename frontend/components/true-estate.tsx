@@ -323,6 +323,14 @@ export function PageHeader({
 }
 
 
+function formatDistance(km: number) {
+  if (km < 0.1) {
+    return '< 100 m'
+  }
+
+  return `${km.toFixed(2)} km`
+}
+
 export function AccessibilityPanel({
   data,
 }: {
@@ -368,7 +376,7 @@ export function AccessibilityPanel({
                 {label}
               </p>
               <p className="text-sm font-medium">
-                {value.toFixed(2)} km
+                {formatDistance(value)}
               </p>
             </div>
           </div>
