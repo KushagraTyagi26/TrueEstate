@@ -15,19 +15,43 @@ export default function AuthGuard({
   useEffect(() => {
     let mounted = true
 
-    const checkSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession()
-
+    const redirectToSignup = () => {
       if (!mounted) return
 
-      if (!session) {
-        router.replace('/signup')
-        return
-      }
+      router.replace('/signup')
 
-      setCheckingAuth(false)
+      window.setTimeout(() => {
+        if (mounted && window.location.pathname !== '/signup') {
+          window.location.replace('/signup')
+        }
+      }, 1000)
+    }
+
+    const checkSession = async () => {
+      try {
+        const {
+          data: { session },
+          error,
+        } = await supabase.auth.getSession()
+
+        if (!mounted) return
+
+        if (error) {
+          console.error('Supabase session error:', error)
+          redirectToSignup()
+          return
+        }
+
+        if (!session) {
+          redirectToSignup()
+          return
+        }
+
+        setCheckingAuth(false)
+      } catch (error) {
+        console.error('Unable to check Supabase session:', error)
+        redirectToSignup()
+      }
     }
 
     checkSession()
@@ -35,13 +59,26 @@ export default function AuthGuard({
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session) {
-        router.replace('/signup')
+      if (!mounted) return
+
+      if (session) {
+        setCheckingAuth(false)
+      } else {
+        setCheckingAuth(true)
+        redirectToSignup()
       }
     })
 
+    const timeoutId = window.setTimeout(() => {
+      if (mounted) {
+        console.warn('Auth check timed out. Redirecting to signup.')
+        redirectToSignup()
+      }
+    }, 6000)
+
     return () => {
       mounted = false
+      window.clearTimeout(timeoutId)
       subscription.unsubscribe()
     }
   }, [router])
