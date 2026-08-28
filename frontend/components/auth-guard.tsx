@@ -1,4 +1,4 @@
-'use client'
+
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
@@ -14,18 +14,19 @@ export default function AuthGuard({
 
   useEffect(() => {
     let mounted = true
+    let authenticated = false
 
     const redirectToSignup = () => {
       if (!mounted) return
-
       router.replace('/signup')
-
-      window.setTimeout(() => {
-        if (mounted && window.location.pathname !== '/signup') {
-          window.location.replace('/signup')
-        }
-      }, 1000)
     }
+
+    const timeoutId = window.setTimeout(() => {
+      if (mounted && !authenticated) {
+        console.warn('Auth check timed out. Redirecting to signup.')
+        redirectToSignup()
+      }
+    }, 8000)
 
     const checkSession = async () => {
       try {
@@ -38,18 +39,24 @@ export default function AuthGuard({
 
         if (error) {
           console.error('Supabase session error:', error)
+          window.clearTimeout(timeoutId)
           redirectToSignup()
           return
         }
 
         if (!session) {
+          window.clearTimeout(timeoutId)
           redirectToSignup()
           return
         }
 
+        authenticated = true
+        window.clearTimeout(timeoutId)
         setCheckingAuth(false)
       } catch (error) {
+        if (!mounted) return
         console.error('Unable to check Supabase session:', error)
+        window.clearTimeout(timeoutId)
         redirectToSignup()
       }
     }
@@ -58,23 +65,22 @@ export default function AuthGuard({
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((event, session) => {
       if (!mounted) return
 
       if (session) {
+        authenticated = true
+        window.clearTimeout(timeoutId)
         setCheckingAuth(false)
-      } else {
+        return
+      }
+
+      if (event === 'SIGNED_OUT') {
+        authenticated = false
         setCheckingAuth(true)
         redirectToSignup()
       }
     })
-
-    const timeoutId = window.setTimeout(() => {
-      if (mounted) {
-        console.warn('Auth check timed out. Redirecting to signup.')
-        redirectToSignup()
-      }
-    }, 6000)
 
     return () => {
       mounted = false
