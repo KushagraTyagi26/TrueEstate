@@ -331,7 +331,7 @@ export default function RecommendPage() {
             <div className="relative overflow-hidden rounded-2xl px-1 pb-7 pt-4">
               <div className="max-w-2xl">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-                  Recommendations
+                  
                 </p>
 
                 <h1
@@ -345,7 +345,7 @@ export default function RecommendPage() {
                 </h1>
 
                 <p className="mt-4 whitespace-nowrap text-sm leading-6 text-[#59645e]">
-                  AI-powered locality recommendations based on rent trends, accessibility, and your preferences.
+                  
                 </p>
               </div>
             </div>

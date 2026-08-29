@@ -535,7 +535,7 @@ export default function ComparePage() {
             <div className="relative overflow-hidden rounded-2xl px-1 pb-7 pt-4">
               <div className="max-w-xl">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-                  Compare Properties
+                  
                 </p>
 
                 <h1
@@ -549,7 +549,7 @@ export default function ComparePage() {
                 </h1>
 
                 <p className="mt-4 whitespace-nowrap text-sm leading-6 text-[#59645e]">
-                  Compare up to 3 properties across rent, value, accessibility, and key location intelligence.
+                  
                 </p>
               </div>
             </div>

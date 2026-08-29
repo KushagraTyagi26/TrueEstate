@@ -184,7 +184,7 @@ export default function EvaluatePage() {
         <main className="mx-auto max-w-[1500px] px-5 pb-16 pt-8 lg:px-8 lg:pb-20 lg:pt-10">
           <div className="mb-7 max-w-full">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-              Evaluate Listing
+              
             </p>
 
             <h1
@@ -198,7 +198,7 @@ export default function EvaluatePage() {
             </h1>
 
             <p className="mt-4 whitespace-nowrap text-sm leading-6 text-[#59645e]">
-              Get a complete evaluation with market comparison, price fairness, and accessibility insights.
+              
             </p>
           </div>
 

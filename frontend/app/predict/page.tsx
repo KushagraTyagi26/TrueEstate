@@ -45,7 +45,7 @@ export default function PredictPage() {
       <main className="mx-auto max-w-[1280px] px-5 py-10 lg:px-8 lg:py-12">
         <div className="mb-7 max-w-full">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-            Estimate Rent
+           
           </p>
 
           <h1
@@ -59,7 +59,7 @@ export default function PredictPage() {
           </h1>
 
           <p className="mt-4 whitespace-nowrap text-sm leading-6 text-[#59645e]">
-            Enter the details and get AI-powered rent estimate along with market & accessibility insights.
+            
           </p>
         </div>
         <div className="grid items-start gap-7 lg:grid-cols-[.72fr_1.28fr]">
