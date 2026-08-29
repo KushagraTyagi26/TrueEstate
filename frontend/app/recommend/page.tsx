@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import { useMemo, useState } from 'react'
 import AuthGuard from '@/components/auth-guard'
@@ -27,14 +27,6 @@ import type {
   City,
   Recommendation,
 } from '@/lib/types'
-
-const localityImages = [
-  'https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=900&q=85',
-  'https://images.unsplash.com/photo-1565018054866-968e244671af?auto=format&fit=crop&w=900&q=85',
-  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=900&q=85',
-  'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=900&q=85',
-  'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=900&q=85',
-]
 
 const priorities = [
   {
@@ -95,6 +87,72 @@ function sortRecommendations(
 function distance(km: number) {
   if (km < 0.1) return '< 100 m'
   return `${km.toFixed(1)} km`
+}
+
+
+function priorityDistance(
+  item: Recommendation,
+  priority: string
+) {
+  if (priority === 'Schools') {
+    return {
+      label: 'Nearest School',
+      value: item.accessibility.school,
+    }
+  }
+
+  if (priority === 'Hospitals') {
+    return {
+      label: 'Nearest Hospital',
+      value: item.accessibility.hospital,
+    }
+  }
+
+  if (priority === 'Malls') {
+    return {
+      label: 'Nearest Mall',
+      value: item.accessibility.mall,
+    }
+  }
+
+  if (priority === 'Transit') {
+    return {
+      label: 'Nearest Metro',
+      value: item.accessibility.transit,
+    }
+  }
+
+  const options = [
+    {
+      label: 'Nearest Metro',
+      value: item.accessibility.transit,
+    },
+    {
+      label: 'Nearest School',
+      value: item.accessibility.school,
+    },
+    {
+      label: 'Nearest Hospital',
+      value: item.accessibility.hospital,
+    },
+    {
+      label: 'Nearest Mall',
+      value: item.accessibility.mall,
+    },
+  ].filter(
+    (entry) =>
+      Number.isFinite(entry.value) &&
+      entry.value >= 0
+  )
+
+  return (
+    options.sort(
+      (a, b) => a.value - b.value
+    )[0] ?? {
+      label: 'Nearest Amenity',
+      value: 0,
+    }
+  )
 }
 
 function matchScore(item: Recommendation) {
@@ -276,37 +334,32 @@ export default function RecommendPage() {
                   Recommendations
                 </p>
 
-                <h1 className="font-serif-display mt-4 max-w-xl text-4xl font-semibold tracking-[-0.035em] text-[#17231e] md:text-[44px] md:leading-[1.08]">
-                  Discover localities that fit your
-                  lifestyle and budget
+                <h1
+                  className="mt-4 whitespace-nowrap text-[40px] font-semibold leading-[1.02] tracking-[-0.045em] text-[#17231e] md:text-[48px] lg:text-[54px]"
+                  style={{
+                    fontFamily:
+                      'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                  }}
+                >
+                  Discover localities that fit your lifestyle and budget
                 </h1>
 
-                <p className="mt-4 max-w-lg text-sm leading-6 text-[#59645e]">
-                  AI-powered locality recommendations
-                  based on rent trends,
-                  accessibility, and your
-                  preferences.
+                <p className="mt-4 whitespace-nowrap text-sm leading-6 text-[#59645e]">
+                  AI-powered locality recommendations based on rent trends, accessibility, and your preferences.
                 </p>
-              </div>
-
-              <div className="pointer-events-none absolute right-8 top-2 hidden h-[170px] w-[350px] lg:block">
-                <div className="absolute bottom-3 left-0 right-0 h-14 rounded-[50%] bg-[#e2eadc]" />
-                <div className="absolute bottom-7 left-8 h-14 w-12 rounded-t-lg border border-[#91ad8a] bg-[#d3e3cd]" />
-                <div className="absolute bottom-7 right-10 h-16 w-14 rounded-t-lg border border-[#91ad8a] bg-[#d3e3cd]" />
-                <MapPin className="absolute right-[125px] top-0 size-20 fill-primary text-primary drop-shadow-sm" />
               </div>
             </div>
 
             <form
               onSubmit={submit}
-              className="rounded-2xl border border-[#dfddd3] bg-[#fcfbf7] p-5 shadow-[0_16px_45px_-38px_rgba(34,48,40,.45)] md:p-6"
+              className="rounded-[26px] border border-[#d8d6cc] bg-[#fcfbf7] p-7 shadow-[0_20px_55px_-38px_rgba(34,48,40,.45)] md:p-9 lg:p-10"
             >
-              <h2 className="text-sm font-semibold text-[#17231e]">
+              <h2 className="text-[24px] font-bold tracking-[-0.025em] text-[#17231e]">
                 Your Preferences
               </h2>
 
-              <div className="mt-4 grid gap-3 md:grid-cols-2 lg:grid-cols-[1fr_1.1fr_.8fr_auto]">
-                <label className="gap-1.5 text-[10px] text-[#65716a]">
+              <div className="mt-7 grid gap-5 md:grid-cols-2 lg:grid-cols-[1fr_1.15fr_.9fr_auto]">
+                <label className="gap-2 text-[12px] font-bold text-[#17231e]">
                   City
                   <select
                     value={city}
@@ -316,7 +369,7 @@ export default function RecommendPage() {
                           .value as City
                       )
                     }
-                    className="h-10 text-xs"
+                    className="h-12 rounded-xl px-4 text-sm font-medium"
                   >
                     <option>Bangalore</option>
                     <option>Mumbai</option>
@@ -325,7 +378,7 @@ export default function RecommendPage() {
                 </label>
 
                 <div className="grid grid-cols-2 gap-2">
-                  <label className="gap-1.5 text-[10px] text-[#65716a]">
+                  <label className="gap-2 text-[12px] font-bold text-[#17231e]">
                     Budget Min
                     <input
                       type="number"
@@ -338,11 +391,11 @@ export default function RecommendPage() {
                           )
                         )
                       }
-                      className="h-10 text-xs"
+                      className="h-12 rounded-xl px-4 text-sm font-medium"
                     />
                   </label>
 
-                  <label className="gap-1.5 text-[10px] text-[#65716a]">
+                  <label className="gap-2 text-[12px] font-bold text-[#17231e]">
                     Budget Max
                     <input
                       type="number"
@@ -355,13 +408,13 @@ export default function RecommendPage() {
                           )
                         )
                       }
-                      className="h-10 text-xs"
+                      className="h-12 rounded-xl px-4 text-sm font-medium"
                     />
                   </label>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  <label className="gap-1.5 text-[10px] text-[#65716a]">
+                  <label className="gap-2 text-[12px] font-bold text-[#17231e]">
                     BHK
                     <select
                       value={bedrooms}
@@ -372,7 +425,7 @@ export default function RecommendPage() {
                           )
                         )
                       }
-                      className="h-10 text-xs"
+                      className="h-12 rounded-xl px-4 text-sm font-medium"
                     >
                       {[1, 2, 3, 4, 5].map(
                         (n) => (
@@ -387,7 +440,7 @@ export default function RecommendPage() {
                     </select>
                   </label>
 
-                  <label className="gap-1.5 text-[10px] text-[#65716a]">
+                  <label className="gap-2 text-[12px] font-bold text-[#17231e]">
                     Area
                     <input
                       type="number"
@@ -400,7 +453,7 @@ export default function RecommendPage() {
                           )
                         )
                       }
-                      className="h-10 text-xs"
+                      className="h-12 rounded-xl px-4 text-sm font-medium"
                     />
                   </label>
                 </div>
@@ -408,7 +461,7 @@ export default function RecommendPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="mt-auto inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-xs font-semibold text-white shadow-sm transition hover:bg-[#103d2e] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="mt-auto inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-7 text-sm font-bold text-white shadow-sm transition hover:bg-[#103d2e] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {loading
                     ? 'Finding…'
@@ -419,7 +472,7 @@ export default function RecommendPage() {
                 </button>
               </div>
 
-              <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+              <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                 {priorities.map(
                   ({
                     label,
@@ -437,21 +490,21 @@ export default function RecommendPage() {
                         onClick={() =>
                           setPriority(value)
                         }
-                        className={`flex items-center gap-3 rounded-xl border p-3 text-left transition ${
+                        className={`flex min-h-[104px] items-center gap-4 rounded-2xl border p-5 text-left transition ${
                           active
                             ? 'border-[#9fbdab] bg-[#e8f0ea]'
                             : 'border-[#e0ded5] bg-[#fffefa] hover:border-[#bfd0c2]'
                         }`}
                       >
-                        <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-[#edf3ee] text-primary">
-                          <Icon className="size-4" />
+                        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-[#edf3ee] text-primary">
+                          <Icon className="size-5" />
                         </span>
 
                         <span>
-                          <strong className="block text-[11px] font-semibold text-[#2d3932]">
+                          <strong className="block text-[14px] font-bold text-[#111915]">
                             {label}
                           </strong>
-                          <span className="mt-0.5 block text-[9px] text-[#78827c]">
+                          <span className="mt-1 block text-[11px] font-medium text-[#68756e]">
                             {active
                               ? 'Selected'
                               : subtitle}
@@ -463,7 +516,7 @@ export default function RecommendPage() {
                 )}
               </div>
 
-              <div className="mt-3 flex items-center justify-end gap-2 text-[10px] text-[#68756e]">
+              <div className="mt-5 flex items-center justify-end gap-2 text-[11px] font-medium text-[#68756e]">
                 <span>Show</span>
                 <select
                   value={topN}
@@ -474,7 +527,7 @@ export default function RecommendPage() {
                       )
                     )
                   }
-                  className="h-7 w-auto px-2 text-[10px]"
+                  className="h-9 w-auto rounded-lg px-3 text-[11px] font-medium"
                 >
                   <option value={3}>3</option>
                   <option value={5}>5</option>
@@ -496,7 +549,7 @@ export default function RecommendPage() {
               {results.length > 0 ? (
                 <>
                   <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <h2 className="text-sm font-semibold text-[#17231e]">
+                    <h2 className="text-[20px] font-bold tracking-[-0.02em] text-[#17231e]">
                       Top Recommended Localities
                     </h2>
 
@@ -530,31 +583,20 @@ export default function RecommendPage() {
                         const score =
                           matchScore(item)
 
+                        const selectedDistance =
+                          priorityDistance(
+                            item,
+                            priority
+                          )
+
                         return (
                           <article
                             key={`${item.locality}-${index}`}
-                            className="grid gap-4 rounded-2xl border border-[#dfddd3] bg-[#fcfbf7] p-3 shadow-[0_16px_45px_-42px_rgba(34,48,40,.45)] md:grid-cols-[150px_1fr_auto] md:items-center"
+                            className="grid gap-5 rounded-[22px] border border-[#dfddd3] bg-[#fcfbf7] p-5 shadow-[0_16px_45px_-42px_rgba(34,48,40,.45)] md:grid-cols-[1fr_auto] md:items-center"
                           >
-                            <div className="relative h-36 overflow-hidden rounded-xl md:h-32">
-                              <img
-                                src={
-                                  localityImages[
-                                    index %
-                                      localityImages.length
-                                  ]
-                                }
-                                alt=""
-                                className="h-full w-full object-cover"
-                              />
-
-                              <span className="absolute left-2 top-2 grid size-7 place-items-center rounded-lg bg-primary text-xs font-semibold text-white shadow">
-                                {index + 1}
-                              </span>
-                            </div>
-
                             <div className="min-w-0 px-1">
                               <div className="flex flex-wrap items-center gap-2">
-                                <h3 className="text-lg font-semibold tracking-[-0.02em] text-[#17231e]">
+                                <h3 className="text-[24px] font-bold tracking-[-0.025em] text-[#17231e]">
                                   {item.locality}
                                 </h3>
 
@@ -565,13 +607,13 @@ export default function RecommendPage() {
                                 )}
                               </div>
 
-                              <p className="mt-0.5 text-[10px] text-[#7a847e]">
+                              <p className="mt-1 text-[11px] font-medium text-[#7a847e]">
                                 {city}
                               </p>
 
                               <div className="mt-4 grid grid-cols-2 gap-y-3 sm:grid-cols-4">
                                 <div className="border-r border-[#e8e6df] pr-3">
-                                  <strong className="text-sm text-primary">
+                                  <strong className="text-[16px] font-bold text-primary">
                                     ₹
                                     {Math.round(
                                       item.estimatedRent
@@ -579,38 +621,37 @@ export default function RecommendPage() {
                                       'en-IN'
                                     )}
                                   </strong>
-                                  <p className="mt-0.5 text-[9px] text-[#7a847e]">
+                                  <p className="mt-1 text-[10px] font-medium text-[#7a847e]">
                                     Est. Rent (
                                     {bedrooms} BHK)
                                   </p>
                                 </div>
 
                                 <div className="border-r border-[#e8e6df] px-3">
-                                  <strong className="text-sm text-[#34413a]">
+                                  <strong className="text-[15px] font-bold text-[#263229]">
                                     {item.accessibility.score.toFixed(
                                       2
                                     )}{' '}
                                     / 10
                                   </strong>
-                                  <p className="mt-0.5 text-[9px] text-[#7a847e]">
+                                  <p className="mt-1 text-[10px] font-medium text-[#7a847e]">
                                     Accessibility
                                   </p>
                                 </div>
 
                                 <div className="border-r border-[#e8e6df] px-3">
-                                  <strong className="text-sm text-[#23724d]">
+                                  <strong className="text-[15px] font-bold text-[#23724d]">
                                     {distance(
-                                      item.accessibility
-                                        .transit
+                                      selectedDistance.value
                                     )}
                                   </strong>
-                                  <p className="mt-0.5 text-[9px] text-[#7a847e]">
-                                    Nearest Metro
+                                  <p className="mt-1 text-[10px] font-medium text-[#7a847e]">
+                                    {selectedDistance.label}
                                   </p>
                                 </div>
 
                                 <div className="pl-3">
-                                  <strong className="text-sm text-[#34413a]">
+                                  <strong className="text-[15px] font-bold text-[#263229]">
                                     {Number(
                                       item.priorityScore
                                     ).toFixed(
@@ -618,24 +659,24 @@ export default function RecommendPage() {
                                     )}{' '}
                                     / 10
                                   </strong>
-                                  <p className="mt-0.5 text-[9px] text-[#7a847e]">
+                                  <p className="mt-1 text-[10px] font-medium text-[#7a847e]">
                                     Priority Score
                                   </p>
                                 </div>
                               </div>
 
-                              <p className="mt-4 line-clamp-2 text-[10px] leading-5 text-[#68756e]">
+                              <p className="mt-5 line-clamp-2 text-[12px] leading-6 text-[#68756e]">
                                 {item.reasons?.[0] ??
                                   'Strong balance of rent, connectivity and daily conveniences.'}
                               </p>
                             </div>
 
-                            <div className="flex items-center justify-between gap-4 border-t border-[#eceae2] pt-3 md:block md:border-l md:border-t-0 md:pl-5 md:pr-3 md:pt-0">
+                            <div className="flex items-center justify-between gap-5 border-t border-[#eceae2] pt-4 md:block md:border-l md:border-t-0 md:pl-7 md:pr-3 md:pt-0">
                               <Ring score={score} />
 
                               <button
                                 type="button"
-                                className="mt-0 inline-flex h-8 items-center justify-center rounded-lg border border-[#9fbdab] px-3 text-[10px] font-semibold text-primary transition hover:bg-[#edf4ef] md:mt-3 md:w-full"
+                                className="mt-0 inline-flex h-9 items-center justify-center rounded-xl border border-[#9fbdab] px-4 text-[11px] font-bold text-primary transition hover:bg-[#edf4ef] md:mt-4 md:w-full"
                               >
                                 View Details
                               </button>
@@ -647,19 +688,19 @@ export default function RecommendPage() {
                   </div>
 
                   {best && (
-                    <section className="mt-4 flex flex-col gap-4 rounded-xl bg-primary px-5 py-4 text-white sm:flex-row sm:items-center sm:justify-between">
+                    <section className="mt-6 flex flex-col gap-5 rounded-[30px] bg-[#174d3a] px-8 py-7 text-white shadow-[0_22px_55px_-28px_rgba(23,77,58,.7)] sm:flex-row sm:items-center sm:justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="grid size-9 shrink-0 place-items-center rounded-full bg-white/10">
-                          <Sparkles className="size-4" />
+                        <span className="grid size-12 shrink-0 place-items-center rounded-full bg-white/12">
+                          <Sparkles className="size-5" />
                         </span>
 
                         <div>
-                          <p className="text-sm font-semibold">
+                          <p className="text-[18px] font-bold tracking-[-0.01em]">
                             {best.locality} is your
                             strongest match based on
                             the selected preferences.
                           </p>
-                          <p className="mt-1 text-[10px] text-white/70">
+                          <p className="mt-2 text-[12px] leading-5 text-white/75">
                             {best.reasons?.[0] ??
                               'Strong accessibility, balanced rent and good market-data coverage.'}
                           </p>
@@ -668,7 +709,7 @@ export default function RecommendPage() {
 
                       <button
                         type="button"
-                        className="inline-flex h-9 shrink-0 items-center justify-center gap-2 rounded-lg bg-white px-4 text-[10px] font-semibold text-primary"
+                        className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-5 text-[11px] font-bold text-primary"
                       >
                         View {best.locality} Details
                         <ArrowRight className="size-3" />

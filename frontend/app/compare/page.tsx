@@ -47,11 +47,6 @@ type Winner = {
   reasons: string[]
 }
 
-const propertyImages = [
-  'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85',
-  'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1000&q=85',
-  'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1000&q=85',
-]
 
 const cities: City[] = ['Bangalore', 'Mumbai', 'New Delhi']
 
@@ -135,9 +130,9 @@ function CompactPropertyEditor({
   }
 
   return (
-    <div className="relative min-w-0 rounded-xl border border-[#dfddd3] bg-[#fffefa] p-4">
+    <div className="relative min-w-0 rounded-2xl border border-[#d8d6cc] bg-[#fffefa] p-6 shadow-[0_10px_30px_-28px_rgba(34,48,40,.45)]" >
       <div className="mb-3 flex items-center justify-between">
-        <p className="text-xs font-semibold text-[#49554e]">
+        <p className="text-[15px] font-bold text-[#17231e]">
           Property {index + 1}
         </p>
 
@@ -161,7 +156,7 @@ function CompactPropertyEditor({
               event.target.value as City
             )
           }
-          className="h-9 text-xs"
+          className="h-11 rounded-xl px-3 text-sm font-medium"
         >
           {cities.map((city) => (
             <option key={city}>{city}</option>
@@ -173,7 +168,7 @@ function CompactPropertyEditor({
           onChange={(event) =>
             set('locality', event.target.value)
           }
-          className="h-9 text-xs"
+          className="h-11 rounded-xl px-3 text-sm font-medium"
         >
           {localities.map((locality) => (
             <option key={locality} value={locality}>
@@ -183,7 +178,7 @@ function CompactPropertyEditor({
         </select>
 
         <div className="grid grid-cols-3 gap-2">
-          <label className="gap-1 text-[9px] text-[#68756e]">
+          <label className="gap-2 text-[11px] font-bold text-[#17231e]">
             Area
             <input
               type="number"
@@ -195,11 +190,11 @@ function CompactPropertyEditor({
                   Number(event.target.value)
                 )
               }
-              className="h-8 px-2 text-xs"
+              className="h-10 rounded-lg px-3 text-sm font-medium"
             />
           </label>
 
-          <label className="gap-1 text-[9px] text-[#68756e]">
+          <label className="gap-2 text-[11px] font-bold text-[#17231e]">
             BHK
             <select
               value={property.bedrooms}
@@ -209,7 +204,7 @@ function CompactPropertyEditor({
                   Number(event.target.value)
                 )
               }
-              className="h-8 px-2 text-xs"
+              className="h-10 rounded-lg px-3 text-sm font-medium"
             >
               {[1, 2, 3, 4, 5].map((n) => (
                 <option key={n} value={n}>
@@ -219,7 +214,7 @@ function CompactPropertyEditor({
             </select>
           </label>
 
-          <label className="gap-1 text-[9px] text-[#68756e]">
+          <label className="gap-2 text-[11px] font-bold text-[#17231e]">
             Rent
             <input
               type="number"
@@ -231,18 +226,18 @@ function CompactPropertyEditor({
                   Number(event.target.value)
                 )
               }
-              className="h-8 px-2 text-xs"
+              className="h-10 rounded-lg px-3 text-sm font-medium"
             />
           </label>
         </div>
 
         <details className="group mt-1">
-          <summary className="cursor-pointer text-[10px] font-medium text-primary">
+          <summary className="cursor-pointer text-[11px] font-bold text-primary" >
             More property details
           </summary>
 
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <label className="gap-1 text-[9px] text-[#68756e]">
+            <label className="gap-2 text-[11px] font-bold text-[#17231e]">
               Bathrooms
               <select
                 value={property.bathrooms}
@@ -252,7 +247,7 @@ function CompactPropertyEditor({
                     Number(event.target.value)
                   )
                 }
-                className="h-8 px-2 text-xs"
+                className="h-10 rounded-lg px-3 text-sm font-medium"
               >
                 {[1, 2, 3, 4, 5].map((n) => (
                   <option key={n} value={n}>
@@ -262,7 +257,7 @@ function CompactPropertyEditor({
               </select>
             </label>
 
-            <label className="gap-1 text-[9px] text-[#68756e]">
+            <label className="gap-2 text-[11px] font-bold text-[#17231e]">
               Balconies
               <select
                 value={property.balconies}
@@ -272,7 +267,7 @@ function CompactPropertyEditor({
                     Number(event.target.value)
                   )
                 }
-                className="h-8 px-2 text-xs"
+                className="h-10 rounded-lg px-3 text-sm font-medium"
               >
                 {[0, 1, 2, 3, 4].map((n) => (
                   <option key={n} value={n}>
@@ -282,7 +277,7 @@ function CompactPropertyEditor({
               </select>
             </label>
 
-            <label className="col-span-2 gap-1 text-[9px] text-[#68756e]">
+            <label className="col-span-2 gap-2 text-[11px] font-bold text-[#17231e]">
               Furnishing
               <select
                 value={property.furnishing}
@@ -293,7 +288,7 @@ function CompactPropertyEditor({
                       .value as PropertyInput['furnishing']
                   )
                 }
-                className="h-8 px-2 text-xs"
+                className="h-10 rounded-lg px-3 text-sm font-medium"
               >
                 <option>Unfurnished</option>
                 <option>Semi-Furnished</option>
@@ -543,48 +538,25 @@ export default function ComparePage() {
                   Compare Properties
                 </p>
 
-                <h1 className="font-serif-display mt-4 text-4xl font-semibold tracking-[-0.035em] text-[#17231e] md:text-[44px] md:leading-[1.08]">
+                <h1
+                  className="mt-4 whitespace-nowrap text-[42px] font-semibold leading-[1.04] tracking-[-0.045em] text-[#17231e] md:text-[52px] lg:text-[58px]"
+                  style={{
+                    fontFamily:
+                      'Arial Rounded MT Bold, Inter, ui-sans-serif, system-ui, sans-serif',
+                  }}
+                >
                   Compare properties side-by-side
                 </h1>
 
-                <p className="mt-4 max-w-lg text-sm leading-6 text-[#59645e]">
-                  Compare up to 3 properties across rent,
-                  value, accessibility, and key location
-                  intelligence.
+                <p className="mt-4 whitespace-nowrap text-sm leading-6 text-[#59645e]">
+                  Compare up to 3 properties across rent, value, accessibility, and key location intelligence.
                 </p>
-              </div>
-
-              <div className="pointer-events-none absolute right-2 top-0 hidden h-full w-[390px] items-end justify-end lg:flex">
-                <div className="relative h-[145px] w-[360px] opacity-80">
-                  <div className="absolute bottom-3 left-8 h-16 w-12 rounded-t-md border border-[#8cab8c] bg-[#dbe7d6]" />
-                  <div className="absolute bottom-3 left-28 h-28 w-16 rounded-t-md border border-[#759775] bg-[#c9dbc7]" />
-                  <div className="absolute bottom-3 left-48 h-20 w-20 rounded-t-md border border-[#8cab8c] bg-[#d7e5d3]" />
-                  <div className="absolute bottom-3 left-[285px] h-24 w-14 rounded-t-md border border-[#759775] bg-[#c9dbc7]" />
-                  <div className="absolute bottom-2 left-2 right-0 h-px bg-[#86a589]" />
-
-                  {[0, 1, 2, 3].map((row) =>
-                    [0, 1].map((col) => (
-                      <span
-                        key={`a-${row}-${col}`}
-                        className="absolute size-1.5 rounded-[1px] bg-[#789978]"
-                        style={{
-                          left:
-                            126 +
-                            col * 22,
-                          top:
-                            37 +
-                            row * 19,
-                        }}
-                      />
-                    ))
-                  )}
-                </div>
               </div>
             </div>
 
-            <section className="rounded-2xl border border-[#dfddd3] bg-[#fcfbf7] p-5 shadow-[0_16px_45px_-38px_rgba(34,48,40,.45)] md:p-6">
+            <section className="rounded-[24px] border border-[#d8d6cc] bg-[#fcfbf7] p-7 shadow-[0_20px_55px_-38px_rgba(34,48,40,.45)] md:p-9" >
               <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <h2 className="text-sm font-semibold text-[#17231e]">
+                <h2 className="text-[22px] font-bold tracking-[-0.02em] text-[#17231e]">
                   Select Properties to Compare
                 </h2>
 
@@ -592,7 +564,7 @@ export default function ComparePage() {
                   type="button"
                   onClick={compare}
                   disabled={loading}
-                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-xs font-semibold text-white shadow-sm transition hover:bg-[#103d2e] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-7 text-sm font-bold text-white shadow-sm transition hover:bg-[#103d2e] disabled:cursor-not-allowed disabled:opacity-60" 
                 >
                   {loading
                     ? 'Comparing…'
@@ -625,7 +597,7 @@ export default function ComparePage() {
                   <button
                     type="button"
                     onClick={add}
-                    className="flex min-h-[150px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-[#cfcec5] bg-[#fffefa] text-xs font-medium text-[#34463d] transition hover:border-primary hover:text-primary"
+                    className="flex min-h-[220px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-[#c9c7bc] bg-[#fffefa] text-sm font-bold text-[#17231e] transition hover:border-primary hover:bg-[#f4f7f2] hover:text-primary" 
                   >
                     <CirclePlus className="size-5" />
                     Add Property
@@ -655,43 +627,31 @@ export default function ComparePage() {
                           key={
                             property.propertyId
                           }
-                          className={`overflow-hidden rounded-2xl border bg-[#fcfbf7] shadow-[0_16px_45px_-40px_rgba(34,48,40,.5)] ${
+                          className={`rounded-[22px] border bg-[#fcfbf7] shadow-[0_16px_45px_-40px_rgba(34,48,40,.5)] ${
                             index === bestIndex
                               ? 'border-[#9fbd9f]'
                               : 'border-[#dfddd3]'
                           }`}
                         >
-                          <div className="relative h-36 overflow-hidden bg-[#e8e9e3]">
-                            <img
-                              src={
-                                propertyImages[
-                                  index %
-                                    propertyImages.length
-                                ]
-                              }
-                              alt=""
-                              className="h-full w-full object-cover"
-                            />
-
-                            <span className="absolute left-3 top-3 grid size-7 place-items-center rounded-lg bg-primary text-xs font-semibold text-white shadow">
-                              {index + 1}
-                            </span>
-
-                            {index ===
-                              bestIndex && (
-                              <span className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1 text-[10px] font-semibold text-primary shadow">
-                                Best Overall
+                          <div className="p-6">
+                            <div className="mb-5 flex items-center justify-between gap-3">
+                              <span className="grid size-8 place-items-center rounded-lg bg-primary text-sm font-bold text-white shadow-sm">
+                                {index + 1}
                               </span>
-                            )}
-                          </div>
 
-                          <div className="p-4">
-                            <h3 className="text-sm font-semibold">
+                              {index === bestIndex && (
+                                <span className="rounded-full bg-[#e6f0e7] px-3 py-1.5 text-[10px] font-bold text-primary">
+                                  Best Overall
+                                </span>
+                              )}
+                            </div>
+
+                            <h3 className="text-[22px] font-bold tracking-[-0.02em] text-[#17231e]">
                               {property.locality},{' '}
                               {property.city}
                             </h3>
 
-                            <p className="mt-1 text-[10px] text-[#68756e]">
+                            <p className="mt-1 text-[11px] font-medium text-[#68756e]">
                               {
                                 property.bedrooms
                               }{' '}
@@ -699,26 +659,26 @@ export default function ComparePage() {
                               sq ft
                             </p>
 
-                            <p className="mt-3 text-lg font-semibold text-[#17231e]">
+                            <p className="mt-4 text-[24px] font-bold text-[#17231e]">
                               {formatINR(
                                 property.askingRent ??
                                   0
                               )}
                             </p>
-                            <p className="text-[10px] text-[#68756e]">
+                            <p className="text-[11px] font-semibold text-[#68756e]">
                               Asking Rent
                             </p>
 
                             <div
-                              className={`mt-3 flex items-end justify-between gap-3 rounded-xl p-3 ${style.panel}`}
+                              className={`mt-5 flex items-end justify-between gap-4 rounded-2xl p-4 ${style.panel}`}
                             >
                               <div>
-                                <p className="text-xs font-semibold text-primary">
+                                <p className="text-[15px] font-bold text-primary">
                                   {formatINR(
                                     property.fairRent
                                   )}
                                 </p>
-                                <p className="text-[9px] text-[#68756e]">
+                                <p className="text-[10px] font-medium text-[#68756e]">
                                   Fair Rent (Est.)
                                 </p>
                               </div>
@@ -738,10 +698,10 @@ export default function ComparePage() {
 
                 <section className="mt-5 overflow-hidden rounded-2xl border border-[#dfddd3] bg-[#fcfbf7] shadow-[0_16px_45px_-42px_rgba(34,48,40,.45)]">
                   <div className="overflow-x-auto">
-                    <table className="w-full min-w-[850px] text-left text-[11px]">
+                    <table className="w-full min-w-[850px] text-left text-[12px]" >
                       <thead>
                         <tr className="border-b border-[#e4e2d9] bg-[#faf9f4]">
-                          <th className="w-[27%] px-4 py-3 font-semibold text-[#17231e]">
+                          <th className="w-[27%] px-5 py-4 text-[14px] font-bold text-[#17231e]" >
                             Comparison Overview
                           </th>
 
@@ -753,7 +713,7 @@ export default function ComparePage() {
                                 key={
                                   property.propertyId
                                 }
-                                className="px-4 py-3 font-semibold text-primary"
+                                className="px-5 py-4 text-[13px] font-bold text-primary"
                               >
                                 {
                                   property.locality
@@ -883,7 +843,7 @@ export default function ComparePage() {
                             key={row.label}
                             className="border-b border-[#eceae2] last:border-0"
                           >
-                            <td className="px-4 py-3 text-[#435048]">
+                            <td className="px-5 py-4 font-semibold text-[#2f3c35]">
                               <span className="flex items-center gap-2">
                                 <row.icon className="size-3.5 text-primary" />
                                 {row.label}
@@ -908,7 +868,7 @@ export default function ComparePage() {
                                     key={
                                       property.propertyId
                                     }
-                                    className={`px-4 py-3 font-medium ${
+                                    className={`px-5 py-4 font-semibold ${
                                       row.status
                                         ? style.text
                                         : row.semantic &&
@@ -946,13 +906,11 @@ export default function ComparePage() {
                 </section>
 
                 {winner.reasons.length > 0 && (
-                  <section className="mt-4 rounded-xl bg-primary px-5 py-4 text-white">
+                  <section className="mt-6 rounded-[28px] bg-primary px-8 py-7 text-white shadow-[0_20px_50px_-30px_rgba(23,77,58,.65)]">
                     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                       <div>
-                        <p className="text-sm font-semibold">
-                          Why{' '}
-                          {winner.locality} ranks
-                          first
+                        <p className="text-[18px] font-bold">
+                          Why {winner.locality} ranks first
                         </p>
                         <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1">
                           {winner.reasons

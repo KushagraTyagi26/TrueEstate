@@ -405,7 +405,13 @@ export function PageHeader({
         </p>
       )}
 
-      <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-[42px] whitespace-nowrap">
+      <h1
+        className="mt-4 whitespace-nowrap text-[40px] font-semibold leading-[1.02] tracking-[-0.045em] text-[#17231e] md:text-[48px] lg:text-[54px]"
+        style={{
+          fontFamily:
+            'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        }}
+      >
         {title}
       </h1>
 
