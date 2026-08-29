@@ -181,18 +181,17 @@ export default function EvaluatePage() {
       <>
         <Navbar />
 
-        <main className="mx-auto max-w-[1500px] px-5 pb-16 pt-8 lg:px-8 lg:pb-20 lg:pt-10">
-          <div className="mb-7 max-w-[610px]">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.16em] text-primary">Evaluate Listing</p>
-            <h1 className="font-serif-display text-[38px] font-semibold leading-[1.12] tracking-[-0.035em] text-foreground md:text-[46px]">
-              Is this property actually<br className="hidden sm:block" /> worth the asking rent?
+        <main className="mx-auto max-w-[1500px] px-5 pb-16 pt-4 lg:px-8 lg:pb-20 lg:pt-6">
+          <div className="mb-5 max-w-none">
+            <h1 className="font-display text-[44px] font-bold leading-tight tracking-[-0.03em] text-foreground whitespace-nowrap md:text-[52px]">
+              Is this property actually worth the asking rent?
             </h1>
-            <p className="mt-4 max-w-xl text-[15px] leading-7 text-muted-foreground">
+            <p className="mt-3 text-[15px] leading-7 text-muted-foreground whitespace-nowrap">
               Get a complete evaluation with market comparison, price fairness, and accessibility insights.
             </p>
           </div>
 
-          <div className="grid items-start gap-5 xl:grid-cols-[408px_minmax(0,1fr)_370px]">
+          <div className="grid items-start gap-5 xl:grid-cols-[520px_minmax(0,1fr)_370px]">
             <div>
               <PropertyForm
                 onSubmit={submit}

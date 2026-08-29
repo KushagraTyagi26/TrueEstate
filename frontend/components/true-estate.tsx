@@ -537,16 +537,16 @@ export function PropertyForm({
         event.preventDefault()
         onSubmit(property)
       }}
-      className="rounded-[28px] border border-border bg-card p-8 shadow-xl md:p-10"
+      className="rounded-[28px] border border-border bg-card p-6 shadow-xl md:p-8"
     >
       {showTitle && (
-        <h2 className="mb-6 text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+        <h2 className="mb-6 text-2xl sm:text-3xl font-bold tracking-tight text-foreground text-left">
           Property Details
         </h2>
       )}
 
       <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
-        <label className="text-sm font-bold text-foreground">
+        <label className="text-base font-extrabold text-black">
           City
           <select
             className={fieldClass}
@@ -568,7 +568,7 @@ export function PropertyForm({
           </select>
         </label>
 
-        <label className="text-sm font-bold text-foreground">
+        <label className="text-base font-extrabold text-black">
           Locality
           <div
             className="relative"
@@ -627,40 +627,40 @@ export function PropertyForm({
           </div>
         </label>
 
-        <label className="text-sm font-bold text-foreground">
+        <label className="text-base font-extrabold text-black">
           Property Type
           <select className={fieldClass} value={property.propertyType} onChange={(event) => update('propertyType', event.target.value as PropertyInput['propertyType'])}>
             <option>Flat</option><option>House</option><option>Villa</option>
           </select>
         </label>
 
-        <label className="text-sm font-bold text-foreground">
+        <label className="text-base font-extrabold text-black">
           Area (sq ft)
           <input className={fieldClass} type="number" min="200" value={property.area} onChange={(event) => update('area', +event.target.value)} />
         </label>
 
-        <label className="text-sm font-bold text-foreground">
+        <label className="text-base font-extrabold text-black">
           Bedrooms
           <select className={fieldClass} value={property.bedrooms} onChange={(event) => update('bedrooms', +event.target.value)}>
             <option>1</option><option>2</option><option>3</option><option>4</option>
           </select>
         </label>
 
-        <label className="text-sm font-bold text-foreground">
+        <label className="text-base font-extrabold text-black">
           Bathrooms
           <select className={fieldClass} value={property.bathrooms} onChange={(event) => update('bathrooms', +event.target.value)}>
             <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option>
           </select>
         </label>
 
-        <label className="text-sm font-bold text-foreground">
+        <label className="text-base font-extrabold text-black">
           Balconies
           <select className={fieldClass} value={property.balconies} onChange={(event) => update('balconies', +event.target.value)}>
             <option>0</option><option>1</option><option>2</option><option>3</option>
           </select>
         </label>
 
-        <label className="text-sm font-bold text-foreground sm:col-span-2">
+        <label className="text-base font-extrabold text-black sm:col-span-2">
           Furnishing
           <select className={fieldClass} value={property.furnishing} onChange={(event) => update('furnishing', event.target.value as PropertyInput['furnishing'])}>
             <option>Furnished</option><option>Semi-Furnished</option><option>Unfurnished</option>
@@ -668,7 +668,7 @@ export function PropertyForm({
         </label>
 
         {showAsking && (
-          <label className="text-sm font-bold text-foreground sm:col-span-2">
+          <label className="text-base font-extrabold text-black sm:col-span-2">
             Asking Rent (Monthly)
             <input className={fieldClass} type="number" min="1" value={property.askingRent ?? ''} onChange={(event) => update('askingRent', +event.target.value)} />
           </label>

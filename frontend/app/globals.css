@@ -8,7 +8,8 @@
 html { background: var(--background); }
 body { @apply bg-background text-foreground antialiased; font-family: var(--font-sans), 'Plus Jakarta Sans', system-ui, sans-serif; }
 .font-serif-display { font-family: var(--font-sans), 'Plus Jakarta Sans', system-ui, sans-serif; }
-label { @apply flex flex-col gap-2 text-[11px] font-medium text-foreground; }
+.font-display { font-family: var(--font-display), 'Poppins', system-ui, sans-serif; }
+label { @apply flex flex-col gap-2 text-[11px] font-medium; }
 input, select { @apply h-10 w-full rounded-lg border border-input bg-[#fffefa] px-3 text-sm font-normal outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10; }
 button, a { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2; }
 ::selection { background: rgba(23,77,58,.16); }

@@ -44,20 +44,19 @@ export default function PredictPage() {
     <AuthGuard>
       <>
         <Navbar />
-        <main className="mx-auto max-w-[1536px] px-6 pt-3 pb-8 lg:px-12">
+        <main className="mx-auto max-w-[1536px] px-6 pt-2 pb-8 lg:px-12">
           <div className="mb-5">
-            <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-[42px] whitespace-nowrap">
+            <h1 className="font-display text-[40px] font-bold leading-tight tracking-[-0.03em] text-foreground whitespace-nowrap md:text-[50px]">
               Find the fair monthly rent for a property.
             </h1>
-            <p className="mt-1.5 text-base sm:text-lg text-muted-foreground">
-              Enter the details and get AI-powered rent estimate along with market & accessibility insights.
+            <p className="mt-2 text-base sm:text-lg text-muted-foreground">
+              Enter the details and get AI-powered rent estimate along with market &amp; accessibility insights.
             </p>
           </div>
 
           <div className="grid items-start gap-8 lg:grid-cols-[520px_1fr]">
             <div>
               <PropertyForm
-                showTitle={false}
                 showAsking={false}
                 onSubmit={submit}
                 submitLabel={loading ? 'Estimating…' : 'Estimate Monthly Rent'}

@@ -1,4 +1,4 @@
-import { Plus_Jakarta_Sans } from 'next/font/google'
+import { Plus_Jakarta_Sans, Poppins } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
 import './globals.css'
@@ -7,6 +7,13 @@ const fontSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700', '800'],
   variable: '--font-sans',
+  display: 'swap',
+})
+
+const fontDisplay = Poppins({
+  subsets: ['latin'],
+  weight: ['600', '700', '800'],
+  variable: '--font-display',
   display: 'swap',
 })
 
@@ -26,7 +33,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${fontSans.variable} bg-background`}>
+    <html lang="en" className={`${fontSans.variable} ${fontDisplay.variable} bg-background`}>
       <body className={`${fontSans.className} antialiased`}>
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
