@@ -6,8 +6,8 @@
 :root { color-scheme: light; --background: #f7f5ef; --foreground: #17231e; --card: #fcfbf7; --card-foreground: #17231e; --popover: #fcfbf7; --popover-foreground: #17231e; --primary: #174d3a; --primary-foreground: #ffffff; --secondary: #efeee8; --secondary-foreground: #273b32; --muted: #eef1ea; --muted-foreground: #68756e; --accent: #e3ede7; --accent-foreground: #174d3a; --destructive: #a54438; --border: #dddcd4; --input: #d7d8d0; --ring: #2c6a52; }
 * { @apply border-border outline-ring/50; }
 html { background: var(--background); }
-body { @apply bg-background text-foreground antialiased; font-family: Arial, Helvetica, sans-serif; }
-.font-serif-display { font-family: Georgia, 'Times New Roman', serif; }
+body { @apply bg-background text-foreground antialiased; font-family: var(--font-sans), 'Plus Jakarta Sans', system-ui, sans-serif; }
+.font-serif-display { font-family: var(--font-sans), 'Plus Jakarta Sans', system-ui, sans-serif; }
 label { @apply flex flex-col gap-2 text-[11px] font-medium text-foreground; }
 input, select { @apply h-10 w-full rounded-lg border border-input bg-[#fffefa] px-3 text-sm font-normal outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10; }
 button, a { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2; }
