@@ -393,21 +393,23 @@ export function PageHeader({
   title,
   description,
 }: {
-  eyebrow: string
+  eyebrow?: string
   title: string
   description: string
 }) {
   return (
-    <div className="mb-10 max-w-2xl">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-        {eyebrow}
-      </p>
+    <div className="mb-6 max-w-full">
+      {eyebrow && (
+        <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-primary">
+          {eyebrow}
+        </p>
+      )}
 
-      <h1 className="text-balance text-4xl font-semibold tracking-[-0.04em] text-foreground md:text-5xl">
+      <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-[42px] whitespace-nowrap">
         {title}
       </h1>
 
-      <p className="mt-4 text-pretty leading-7 text-muted-foreground">
+      <p className="mt-2 text-base sm:text-lg text-muted-foreground">
         {description}
       </p>
     </div>
@@ -525,7 +527,7 @@ export function PropertyForm({
     setProperty({ ...property, [key]: value })
   }
 
-  const fieldClass = 'h-11 rounded-lg border border-input bg-[#fffefa] px-3 text-sm transition focus:border-primary focus:ring-2 focus:ring-primary/10'
+  const fieldClass = 'h-12 rounded-xl border border-input bg-[#fffefa] px-3.5 text-base font-semibold transition focus:border-primary focus:ring-2 focus:ring-primary/10'
 
   return (
     <form
@@ -533,12 +535,12 @@ export function PropertyForm({
         event.preventDefault()
         onSubmit(property)
       }}
-      className="rounded-2xl border border-border bg-card p-5 shadow-[0_14px_40px_-34px_rgba(23,77,58,.35)] md:p-6"
+      className="rounded-3xl border border-border bg-card p-6 shadow-xl md:p-8"
     >
-      <h2 className="mb-6 text-lg font-semibold tracking-[-0.02em]">Property Details</h2>
+      <h2 className="mb-6 text-xl sm:text-2xl font-bold tracking-tight text-foreground">Property Details</h2>
 
-      <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2">
-        <label>
+      <div className="grid gap-x-4 gap-y-6 sm:grid-cols-2">
+        <label className="text-sm font-bold text-foreground">
           City
           <select
             className={fieldClass}
@@ -560,7 +562,7 @@ export function PropertyForm({
           </select>
         </label>
 
-        <label>
+        <label className="text-sm font-bold text-foreground">
           Locality
           <div
             className="relative"
@@ -619,40 +621,40 @@ export function PropertyForm({
           </div>
         </label>
 
-        <label>
+        <label className="text-sm font-bold text-foreground">
           Property Type
           <select className={fieldClass} value={property.propertyType} onChange={(event) => update('propertyType', event.target.value as PropertyInput['propertyType'])}>
             <option>Flat</option><option>House</option><option>Villa</option>
           </select>
         </label>
 
-        <label>
+        <label className="text-sm font-bold text-foreground">
           Area (sq ft)
           <input className={fieldClass} type="number" min="200" value={property.area} onChange={(event) => update('area', +event.target.value)} />
         </label>
 
-        <label>
+        <label className="text-sm font-bold text-foreground">
           Bedrooms
           <select className={fieldClass} value={property.bedrooms} onChange={(event) => update('bedrooms', +event.target.value)}>
             <option>1</option><option>2</option><option>3</option><option>4</option>
           </select>
         </label>
 
-        <label>
+        <label className="text-sm font-bold text-foreground">
           Bathrooms
           <select className={fieldClass} value={property.bathrooms} onChange={(event) => update('bathrooms', +event.target.value)}>
             <option>0</option><option>1</option><option>2</option><option>3</option><option>4</option>
           </select>
         </label>
 
-        <label>
+        <label className="text-sm font-bold text-foreground">
           Balconies
           <select className={fieldClass} value={property.balconies} onChange={(event) => update('balconies', +event.target.value)}>
             <option>0</option><option>1</option><option>2</option><option>3</option>
           </select>
         </label>
 
-        <label className="sm:col-span-2">
+        <label className="text-sm font-bold text-foreground sm:col-span-2">
           Furnishing
           <select className={fieldClass} value={property.furnishing} onChange={(event) => update('furnishing', event.target.value as PropertyInput['furnishing'])}>
             <option>Furnished</option><option>Semi-Furnished</option><option>Unfurnished</option>
@@ -660,15 +662,15 @@ export function PropertyForm({
         </label>
 
         {showAsking && (
-          <label className="sm:col-span-2">
+          <label className="text-sm font-bold text-foreground sm:col-span-2">
             Asking Rent (Monthly)
             <input className={fieldClass} type="number" min="1" value={property.askingRent ?? ''} onChange={(event) => update('askingRent', +event.target.value)} />
           </label>
         )}
       </div>
 
-      <Button type="submit" className="mt-6 h-11 w-full rounded-lg bg-primary text-primary-foreground hover:bg-[#123f30]">
-        {submitLabel}<ArrowRight className="size-4" />
+      <Button type="submit" className="mt-8 h-13 w-full rounded-xl bg-primary text-base font-bold text-primary-foreground shadow-md transition hover:bg-[#123f30]">
+        {submitLabel}<ArrowRight className="size-5" />
       </Button>
     </form>
   )
