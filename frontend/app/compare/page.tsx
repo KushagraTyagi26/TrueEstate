@@ -1,20 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import AuthGuard from '@/components/auth-guard'
 import {
-  Check,
-  Plus,
+  ArrowRight,
+  Building2,
+  CheckCircle2,
+  CirclePlus,
+  Hospital,
+  Landmark,
+  MapPin,
+  School,
+  TrainFront,
   Trash2,
 } from 'lucide-react'
 
 import {
   Navbar,
   Footer,
-  PageHeader,
-  PropertyForm,
-  MetricCard,
-  AccessibilityPanel,
 } from '@/components/true-estate'
 
 import {
@@ -28,10 +31,12 @@ import {
 } from '@/lib/types'
 
 import type {
+  City,
   ComparisonProperty,
   PropertyInput,
 } from '@/lib/types'
 
+import { LOCALITIES_BY_CITY } from '@/lib/localities'
 
 type Winner = {
   propertyId: number
@@ -42,23 +47,298 @@ type Winner = {
   reasons: string[]
 }
 
+const propertyImages = [
+  'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1000&q=85',
+  'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=1000&q=85',
+  'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1000&q=85',
+]
+
+const cities: City[] = ['Bangalore', 'Mumbai', 'New Delhi']
+
+function statusStyle(status: string) {
+  const normalized = status.toLowerCase()
+
+  if (
+    normalized.includes('over') ||
+    normalized.includes('above')
+  ) {
+    return {
+      text: 'text-[#b43d32]',
+      badge:
+        'border-[#efc8c2] bg-[#fae7e3] text-[#a83d33]',
+      panel: 'bg-[#fff0eb]',
+    }
+  }
+
+  if (
+    normalized.includes('under') ||
+    normalized.includes('below')
+  ) {
+    return {
+      text: 'text-[#17613e]',
+      badge:
+        'border-[#c6dfcf] bg-[#e3f0e7] text-[#17613e]',
+      panel: 'bg-[#edf5ef]',
+    }
+  }
+
+  return {
+    text: 'text-[#17613e]',
+    badge:
+      'border-[#c7decf] bg-[#e5f0e8] text-[#17613e]',
+    panel: 'bg-[#eef4e9]',
+  }
+}
+
+function formatDistance(km: number) {
+  if (km < 0.1) return '< 100 m'
+  return `${km.toFixed(1)} km`
+}
+
+function CompactPropertyEditor({
+  property,
+  index,
+  onChange,
+  onRemove,
+  removable,
+}: {
+  property: PropertyInput
+  index: number
+  onChange: (next: PropertyInput) => void
+  onRemove: () => void
+  removable: boolean
+}) {
+  const localities =
+    LOCALITIES_BY_CITY[property.city] ?? []
+
+  const set = <K extends keyof PropertyInput>(
+    key: K,
+    value: PropertyInput[K]
+  ) => {
+    onChange({
+      ...property,
+      [key]: value,
+    })
+  }
+
+  const changeCity = (city: City) => {
+    const nextLocalities =
+      LOCALITIES_BY_CITY[city] ?? []
+
+    onChange({
+      ...property,
+      city,
+      locality:
+        nextLocalities[0] ??
+        defaultProperty.locality,
+    })
+  }
+
+  return (
+    <div className="relative min-w-0 rounded-xl border border-[#dfddd3] bg-[#fffefa] p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-xs font-semibold text-[#49554e]">
+          Property {index + 1}
+        </p>
+
+        {removable && (
+          <button
+            type="button"
+            onClick={onRemove}
+            className="rounded-md p-1 text-[#8a938d] transition hover:bg-[#f4f1e9] hover:text-[#a54438]"
+            aria-label={`Remove property ${index + 1}`}
+          >
+            <Trash2 className="size-3.5" />
+          </button>
+        )}
+      </div>
+
+      <div className="grid gap-2">
+        <select
+          value={property.city}
+          onChange={(event) =>
+            changeCity(
+              event.target.value as City
+            )
+          }
+          className="h-9 text-xs"
+        >
+          {cities.map((city) => (
+            <option key={city}>{city}</option>
+          ))}
+        </select>
+
+        <select
+          value={property.locality}
+          onChange={(event) =>
+            set('locality', event.target.value)
+          }
+          className="h-9 text-xs"
+        >
+          {localities.map((locality) => (
+            <option key={locality} value={locality}>
+              {locality}
+            </option>
+          ))}
+        </select>
+
+        <div className="grid grid-cols-3 gap-2">
+          <label className="gap-1 text-[9px] text-[#68756e]">
+            Area
+            <input
+              type="number"
+              min={200}
+              value={property.area}
+              onChange={(event) =>
+                set(
+                  'area',
+                  Number(event.target.value)
+                )
+              }
+              className="h-8 px-2 text-xs"
+            />
+          </label>
+
+          <label className="gap-1 text-[9px] text-[#68756e]">
+            BHK
+            <select
+              value={property.bedrooms}
+              onChange={(event) =>
+                set(
+                  'bedrooms',
+                  Number(event.target.value)
+                )
+              }
+              className="h-8 px-2 text-xs"
+            >
+              {[1, 2, 3, 4, 5].map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="gap-1 text-[9px] text-[#68756e]">
+            Rent
+            <input
+              type="number"
+              min={0}
+              value={property.askingRent ?? 0}
+              onChange={(event) =>
+                set(
+                  'askingRent',
+                  Number(event.target.value)
+                )
+              }
+              className="h-8 px-2 text-xs"
+            />
+          </label>
+        </div>
+
+        <details className="group mt-1">
+          <summary className="cursor-pointer text-[10px] font-medium text-primary">
+            More property details
+          </summary>
+
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            <label className="gap-1 text-[9px] text-[#68756e]">
+              Bathrooms
+              <select
+                value={property.bathrooms}
+                onChange={(event) =>
+                  set(
+                    'bathrooms',
+                    Number(event.target.value)
+                  )
+                }
+                className="h-8 px-2 text-xs"
+              >
+                {[1, 2, 3, 4, 5].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="gap-1 text-[9px] text-[#68756e]">
+              Balconies
+              <select
+                value={property.balconies}
+                onChange={(event) =>
+                  set(
+                    'balconies',
+                    Number(event.target.value)
+                  )
+                }
+                className="h-8 px-2 text-xs"
+              >
+                {[0, 1, 2, 3, 4].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="col-span-2 gap-1 text-[9px] text-[#68756e]">
+              Furnishing
+              <select
+                value={property.furnishing}
+                onChange={(event) =>
+                  set(
+                    'furnishing',
+                    event.target
+                      .value as PropertyInput['furnishing']
+                  )
+                }
+                className="h-8 px-2 text-xs"
+              >
+                <option>Unfurnished</option>
+                <option>Semi-Furnished</option>
+                <option>Furnished</option>
+              </select>
+            </label>
+          </div>
+        </details>
+      </div>
+    </div>
+  )
+}
 
 export default function ComparePage() {
   const [items, setItems] =
     useState<PropertyInput[]>([
       {
         ...defaultProperty,
-        locality: 'Andheri East',
-        city: 'Mumbai',
-        area: 1000,
-        askingRent: 60000,
+        city: 'Bangalore',
+        locality: 'Whitefield',
+        area: 1200,
+        bedrooms: 2,
+        bathrooms: 2,
+        balconies: 1,
+        askingRent: 55000,
       },
       {
         ...defaultProperty,
-        locality: 'Whitefield',
         city: 'Bangalore',
-        area: 1200,
-        askingRent: 45000,
+        locality: 'HSR Layout',
+        area: 1100,
+        bedrooms: 2,
+        bathrooms: 2,
+        balconies: 1,
+        askingRent: 52000,
+      },
+      {
+        ...defaultProperty,
+        city: 'Bangalore',
+        locality: 'Koramangala',
+        area: 1150,
+        bedrooms: 2,
+        bathrooms: 2,
+        balconies: 1,
+        askingRent: 65000,
       },
     ])
 
@@ -74,67 +354,50 @@ export default function ComparePage() {
   const [error, setError] =
     useState<string | null>(null)
 
-
-  const add = () => {
-    if (items.length >= 3) {
-      return
-    }
-
-    setItems([
-      ...items,
-      {
-        ...defaultProperty,
-        city: 'New Delhi',
-        locality: 'Saket',
-        area: 1200,
-        bedrooms: 3,
-        bathrooms: 3,
-        balconies: 2,
-        askingRent: 45000,
-      },
-    ])
-
-    setResults(null)
-    setWinner(null)
-  }
-
-
-  const remove = (
-    index: number
-  ) => {
-    if (items.length <= 2) {
-      return
-    }
-
-    setItems(
-      items.filter(
-        (_, itemIndex) =>
-          itemIndex !== index
-      )
-    )
-
-    setResults(null)
-    setWinner(null)
-  }
-
-
-  const saveProperty = (
+  const update = (
     index: number,
     property: PropertyInput
   ) => {
-    setItems(
-      items.map(
-        (item, itemIndex) =>
-          itemIndex === index
-            ? property
-            : item
+    setItems((current) =>
+      current.map((item, itemIndex) =>
+        itemIndex === index ? property : item
       )
     )
-
     setResults(null)
     setWinner(null)
   }
 
+  const add = () => {
+    if (items.length >= 3) return
+
+    const city: City = 'Bangalore'
+    const locality =
+      LOCALITIES_BY_CITY[city]?.[0] ??
+      'Whitefield'
+
+    setItems((current) => [
+      ...current,
+      {
+        ...defaultProperty,
+        city,
+        locality,
+        askingRent: 45000,
+      },
+    ])
+    setResults(null)
+    setWinner(null)
+  }
+
+  const remove = (index: number) => {
+    if (items.length <= 2) return
+    setItems((current) =>
+      current.filter(
+        (_, itemIndex) => itemIndex !== index
+      )
+    )
+    setResults(null)
+    setWinner(null)
+  }
 
   const compare = async () => {
     setLoading(true)
@@ -155,131 +418,99 @@ export default function ComparePage() {
           )
         )
 
-      const mappedResults:
-        ComparisonProperty[] =
+      const mappedResults: any[] =
         response.comparison.map(
-          (
-            item: any,
-            index: number
-          ) => {
+          (item: any, index: number) => {
             const original =
-              items[
-                item.property_id - 1
-              ]
+              items[item.property_id - 1]
 
             const location =
-              locationResponses[
-                index
-              ]?.location_intelligence
+              locationResponses[index]
+                ?.location_intelligence
 
             return {
               ...original,
-
               propertyId:
                 item.property_id,
-
               rank:
                 item.comparison_rank,
-
-              city:
-                item.city,
-
-              locality:
-                item.locality,
-
-              area:
-                item.area,
-
-              bedrooms:
-                item.beds,
-
+              city: item.city,
+              locality: item.locality,
+              area: item.area,
+              bedrooms: item.beds,
               askingRent:
                 item.asking_rent,
-
               fairRent:
                 item.fair_rent,
-
               valueScore:
                 item.value_score,
-
               valueLabel:
                 item.value_label,
-
               priceFairness:
                 item.value_components
                   .price_fairness,
-
               marketPosition:
                 item.value_components
                   .market_position,
-
               status:
                 item.price_status,
-
               expectedRange:
                 `${formatINR(
-                  item.expected_range
-                    .lower
+                  item.expected_range.lower
                 )} – ${formatINR(
-                  item.expected_range
-                    .upper
+                  item.expected_range.upper
                 )}`,
-
               accessibility: {
                 score:
                   item.accessibility_score,
-
                 hospital:
                   location?.hospital_km ?? 0,
-
                 school:
                   location?.school_km ?? 0,
-
                 mall:
                   location?.mall_km ?? 0,
-
                 transit:
                   location?.station_km ?? 0,
               },
-
               predictedRate:
                 item.predicted_rate_per_sqft,
-
               localityRate:
                 item.locality_market_rate,
+              difference:
+                item.asking_rent -
+                item.fair_rent,
+              differencePercent:
+                item.fair_rent
+                  ? ((item.asking_rent -
+                      item.fair_rent) /
+                      item.fair_rent) *
+                    100
+                  : 0,
             }
           }
         )
 
-      setResults(mappedResults)
+      setResults(
+        mappedResults as ComparisonProperty[]
+      )
 
       setWinner({
         propertyId:
-          response.best_choice
-            .property_id,
-
+          response.best_choice.property_id,
         city:
           response.best_choice.city,
-
         locality:
           response.best_choice.locality,
-
         valueScore:
-          response.best_choice
-            .value_score,
-
+          response.best_choice.value_score,
         valueLabel:
-          response.best_choice
-            .value_label,
-
+          response.best_choice.value_label,
         reasons:
-          response.best_choice
-            .reasons,
+          response.best_choice.reasons ?? [],
       })
     } catch (err) {
       setResults(null)
       setWinner(null)
-
       setError(
         err instanceof Error
           ? err.message
@@ -290,390 +521,493 @@ export default function ComparePage() {
     }
   }
 
+  const bestIndex = useMemo(() => {
+    if (!results || !winner) return -1
+    return results.findIndex(
+      (property: any) =>
+        property.propertyId ===
+        winner.propertyId
+    )
+  }, [results, winner])
 
   return (
     <AuthGuard>
       <>
-      <Navbar />
+        <Navbar />
 
-      <main className="mx-auto max-w-7xl px-5 py-14 lg:px-8 lg:py-20">
-        <PageHeader
-          eyebrow="Compare properties"
-          title="Put the shortlist side by side."
-          description="Compare fair rent, price position, accessibility, and overall value before you choose."
-        />
+        <main className="min-h-screen bg-[#f7f5ef] pb-16">
+          <section className="mx-auto max-w-[1380px] px-5 pt-8 lg:px-8">
+            <div className="relative overflow-hidden rounded-2xl px-1 pb-7 pt-4">
+              <div className="max-w-xl">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+                  Compare Properties
+                </p>
 
-        <div className="grid gap-5 lg:grid-cols-2">
-          {items.map(
-            (item, index) => (
-              <div
-                key={index}
-                className="relative"
-              >
-                <div className="mb-3 flex items-center justify-between">
-                  <p className="text-sm font-medium">
-                    Property {index + 1}
-                  </p>
+                <h1 className="font-serif-display mt-4 text-4xl font-semibold tracking-[-0.035em] text-[#17231e] md:text-[44px] md:leading-[1.08]">
+                  Compare properties side-by-side
+                </h1>
 
-                  {items.length > 2 && (
-                    <button
-                      type="button"
-                      aria-label={`Remove property ${
-                        index + 1
-                      }`}
-                      className="text-muted-foreground hover:text-foreground"
-                      onClick={() =>
-                        remove(index)
-                      }
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
+                <p className="mt-4 max-w-lg text-sm leading-6 text-[#59645e]">
+                  Compare up to 3 properties across rent,
+                  value, accessibility, and key location
+                  intelligence.
+                </p>
+              </div>
+
+              <div className="pointer-events-none absolute right-2 top-0 hidden h-full w-[390px] items-end justify-end lg:flex">
+                <div className="relative h-[145px] w-[360px] opacity-80">
+                  <div className="absolute bottom-3 left-8 h-16 w-12 rounded-t-md border border-[#8cab8c] bg-[#dbe7d6]" />
+                  <div className="absolute bottom-3 left-28 h-28 w-16 rounded-t-md border border-[#759775] bg-[#c9dbc7]" />
+                  <div className="absolute bottom-3 left-48 h-20 w-20 rounded-t-md border border-[#8cab8c] bg-[#d7e5d3]" />
+                  <div className="absolute bottom-3 left-[285px] h-24 w-14 rounded-t-md border border-[#759775] bg-[#c9dbc7]" />
+                  <div className="absolute bottom-2 left-2 right-0 h-px bg-[#86a589]" />
+
+                  {[0, 1, 2, 3].map((row) =>
+                    [0, 1].map((col) => (
+                      <span
+                        key={`a-${row}-${col}`}
+                        className="absolute size-1.5 rounded-[1px] bg-[#789978]"
+                        style={{
+                          left:
+                            126 +
+                            col * 22,
+                          top:
+                            37 +
+                            row * 19,
+                        }}
+                      />
+                    ))
                   )}
                 </div>
-
-                <PropertyForm
-                  initial={item}
-                  onSubmit={(property) =>
-                    saveProperty(
-                      index,
-                      property
-                    )
-                  }
-                  submitLabel="Save Property"
-                />
-              </div>
-            )
-          )}
-
-          {items.length < 3 && (
-            <button
-              type="button"
-              onClick={add}
-              className="flex min-h-40 items-center justify-center gap-2 rounded-xl border border-dashed border-border text-sm text-muted-foreground transition hover:border-primary hover:text-primary"
-            >
-              <Plus className="size-4" />
-              Add Property
-            </button>
-          )}
-        </div>
-
-        <button
-          type="button"
-          onClick={compare}
-          disabled={loading}
-          className="mt-8 h-11 w-full rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          {loading
-            ? 'Comparing Properties…'
-            : `Compare ${items.length} Properties`}
-        </button>
-
-        {error && (
-          <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-            {error}
-          </div>
-        )}
-
-        {results && winner && (
-          <section className="mt-16">
-            <div className="mb-8 rounded-2xl bg-primary p-7 text-primary-foreground md:p-10">
-              <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/70">
-                Best overall choice
-              </p>
-
-              <div className="mt-4 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <h2 className="text-3xl font-semibold tracking-tight">
-                    {winner.locality},{' '}
-                    {winner.city}
-                  </h2>
-
-                  <p className="mt-2 text-sm text-primary-foreground/75">
-                    Ranked #1 by TrueEstate's
-                    value-for-money analysis
-                  </p>
-                </div>
-
-                <div className="text-left md:text-right">
-                  <strong className="text-4xl">
-                    {winner.valueScore.toFixed(
-                      2
-                    )}
-                  </strong>
-
-                  <span className="ml-1 text-sm text-primary-foreground/70">
-                    / 10
-                  </span>
-
-                  <p className="text-xs text-primary-foreground/75">
-                    {winner.valueLabel}
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-6 flex flex-col gap-2 text-sm text-primary-foreground/80">
-                {winner.reasons.map(
-                  (reason) => (
-                    <p
-                      key={reason}
-                      className="flex gap-2"
-                    >
-                      <Check className="size-4 shrink-0" />
-                      {reason}
-                    </p>
-                  )
-                )}
               </div>
             </div>
 
-            <div className="hidden overflow-x-auto rounded-xl border border-border bg-card md:block">
-              <table className="w-full min-w-[760px] text-left text-sm">
-                <thead className="border-b border-border bg-muted/40">
-                  <tr>
-                    <th className="p-4 font-medium text-muted-foreground">
-                      Metric
-                    </th>
+            <section className="rounded-2xl border border-[#dfddd3] bg-[#fcfbf7] p-5 shadow-[0_16px_45px_-38px_rgba(34,48,40,.45)] md:p-6">
+              <div className="mb-5 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <h2 className="text-sm font-semibold text-[#17231e]">
+                  Select Properties to Compare
+                </h2>
 
-                    {results.map(
-                      (property) => (
-                        <th
+                <button
+                  type="button"
+                  onClick={compare}
+                  disabled={loading}
+                  className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-xs font-semibold text-white shadow-sm transition hover:bg-[#103d2e] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {loading
+                    ? 'Comparing…'
+                    : 'Compare Now'}
+                  {!loading && (
+                    <ArrowRight className="size-3.5" />
+                  )}
+                </button>
+              </div>
+
+              <div className="grid gap-3 lg:grid-cols-3">
+                {items.map((item, index) => (
+                  <CompactPropertyEditor
+                    key={index}
+                    property={item}
+                    index={index}
+                    onChange={(next) =>
+                      update(index, next)
+                    }
+                    onRemove={() =>
+                      remove(index)
+                    }
+                    removable={
+                      items.length > 2
+                    }
+                  />
+                ))}
+
+                {items.length < 3 && (
+                  <button
+                    type="button"
+                    onClick={add}
+                    className="flex min-h-[150px] flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-[#cfcec5] bg-[#fffefa] text-xs font-medium text-[#34463d] transition hover:border-primary hover:text-primary"
+                  >
+                    <CirclePlus className="size-5" />
+                    Add Property
+                  </button>
+                )}
+              </div>
+
+              {error && (
+                <div className="mt-4 rounded-lg border border-[#e6bbb4] bg-[#faece9] p-3 text-xs text-[#a54438]">
+                  {error}
+                </div>
+              )}
+            </section>
+
+            {results && winner ? (
+              <div className="mt-5">
+                <div className="grid gap-4 md:grid-cols-3">
+                  {results.map(
+                    (property: any, index) => {
+                      const style =
+                        statusStyle(
+                          property.status
+                        )
+
+                      return (
+                        <article
                           key={
                             property.propertyId
                           }
-                          className={`p-4 font-medium ${
-                            property.rank === 1
-                              ? 'text-primary'
-                              : ''
+                          className={`overflow-hidden rounded-2xl border bg-[#fcfbf7] shadow-[0_16px_45px_-40px_rgba(34,48,40,.5)] ${
+                            index === bestIndex
+                              ? 'border-[#9fbd9f]'
+                              : 'border-[#dfddd3]'
                           }`}
                         >
-                          {property.locality}
-                          <br />
-                          <span className="text-xs font-normal text-muted-foreground">
-                            Rank #
-                            {property.rank}
-                          </span>
-                        </th>
-                      )
-                    )}
-                  </tr>
-                </thead>
-
-                <tbody>
-                  {[
-                    [
-                      'Asking Rent',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        formatINR(
-                          property.askingRent ??
-                            0
-                        ),
-                    ],
-                    [
-                      'Fair Rent',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        formatINR(
-                          property.fairRent
-                        ),
-                    ],
-                    [
-                      'Expected Range',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        property.expectedRange,
-                    ],
-                    [
-                      'Price Status',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        property.status,
-                    ],
-                    [
-                      'Predicted ₹/sqft',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        `₹${property.predictedRate}`,
-                    ],
-                    [
-                      'Locality Market Rate',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        `₹${property.localityRate}`,
-                    ],
-                    [
-                      'Accessibility',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        `${property.accessibility.score}/10`,
-                    ],
-                    [
-                      'Value Score',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        `${property.valueScore}/10`,
-                    ],
-                    [
-                      'Price Fairness',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        `${property.priceFairness}/10`,
-                    ],
-                    [
-                      'Market Position',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        `${property.marketPosition}/10`,
-                    ],
-                    [
-                      'Overall Rank',
-                      (
-                        property:
-                          ComparisonProperty
-                      ) =>
-                        `#${property.rank}`,
-                    ],
-                  ].map(
-                    ([label, getValue]) => (
-                      <tr
-                        key={label as string}
-                        className="border-b border-border last:border-0"
-                      >
-                        <td className="p-4 text-muted-foreground">
-                          {label as string}
-                        </td>
-
-                        {results.map(
-                          (property) => (
-                            <td
-                              key={
-                                property.propertyId
+                          <div className="relative h-36 overflow-hidden bg-[#e8e9e3]">
+                            <img
+                              src={
+                                propertyImages[
+                                  index %
+                                    propertyImages.length
+                                ]
                               }
-                              className={`p-4 ${
-                                property.rank ===
-                                1
-                                  ? 'font-semibold text-primary'
-                                  : ''
-                              }`}
+                              alt=""
+                              className="h-full w-full object-cover"
+                            />
+
+                            <span className="absolute left-3 top-3 grid size-7 place-items-center rounded-lg bg-primary text-xs font-semibold text-white shadow">
+                              {index + 1}
+                            </span>
+
+                            {index ===
+                              bestIndex && (
+                              <span className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1 text-[10px] font-semibold text-primary shadow">
+                                Best Overall
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="p-4">
+                            <h3 className="text-sm font-semibold">
+                              {property.locality},{' '}
+                              {property.city}
+                            </h3>
+
+                            <p className="mt-1 text-[10px] text-[#68756e]">
+                              {
+                                property.bedrooms
+                              }{' '}
+                              BHK · {property.area}{' '}
+                              sq ft
+                            </p>
+
+                            <p className="mt-3 text-lg font-semibold text-[#17231e]">
+                              {formatINR(
+                                property.askingRent ??
+                                  0
+                              )}
+                            </p>
+                            <p className="text-[10px] text-[#68756e]">
+                              Asking Rent
+                            </p>
+
+                            <div
+                              className={`mt-3 flex items-end justify-between gap-3 rounded-xl p-3 ${style.panel}`}
                             >
-                              {(
-                                getValue as (
-                                  property:
-                                    ComparisonProperty
-                                ) => string
-                              )(property)}
-                            </td>
-                          )
-                        )}
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
-            </div>
+                              <div>
+                                <p className="text-xs font-semibold text-primary">
+                                  {formatINR(
+                                    property.fairRent
+                                  )}
+                                </p>
+                                <p className="text-[9px] text-[#68756e]">
+                                  Fair Rent (Est.)
+                                </p>
+                              </div>
 
-            <div className="flex flex-col gap-4 md:hidden">
-              {results.map(
-                (property) => (
-                  <div
-                    key={
-                      property.propertyId
+                              <span
+                                className={`text-right text-[9px] font-semibold ${style.text}`}
+                              >
+                                {property.status}
+                              </span>
+                            </div>
+                          </div>
+                        </article>
+                      )
                     }
-                    className={`rounded-xl border bg-card p-5 ${
-                      property.rank === 1
-                        ? 'border-primary/40'
-                        : 'border-border'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium">
-                          #{property.rank}{' '}
-                          ·{' '}
-                          {
-                            property.locality
-                          }
-                        </h3>
+                  )}
+                </div>
 
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          {property.city}
+                <section className="mt-5 overflow-hidden rounded-2xl border border-[#dfddd3] bg-[#fcfbf7] shadow-[0_16px_45px_-42px_rgba(34,48,40,.45)]">
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[850px] text-left text-[11px]">
+                      <thead>
+                        <tr className="border-b border-[#e4e2d9] bg-[#faf9f4]">
+                          <th className="w-[27%] px-4 py-3 font-semibold text-[#17231e]">
+                            Comparison Overview
+                          </th>
+
+                          {results.map(
+                            (
+                              property: any
+                            ) => (
+                              <th
+                                key={
+                                  property.propertyId
+                                }
+                                className="px-4 py-3 font-semibold text-primary"
+                              >
+                                {
+                                  property.locality
+                                }
+                              </th>
+                            )
+                          )}
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {[
+                          {
+                            label:
+                              'Asking Rent',
+                            icon: Building2,
+                            value: (
+                              p: any
+                            ) =>
+                              formatINR(
+                                p.askingRent ??
+                                  0
+                              ),
+                          },
+                          {
+                            label:
+                              'Fair Rent (Estimated)',
+                            icon: Landmark,
+                            value: (
+                              p: any
+                            ) =>
+                              formatINR(
+                                p.fairRent
+                              ),
+                          },
+                          {
+                            label:
+                              'Difference',
+                            icon: MapPin,
+                            value: (
+                              p: any
+                            ) => {
+                              const diff =
+                                p.difference ??
+                                (p.askingRent ??
+                                  0) -
+                                  p.fairRent
+                              const pct =
+                                p.differencePercent ??
+                                (p.fairRent
+                                  ? (diff /
+                                      p.fairRent) *
+                                    100
+                                  : 0)
+
+                              return `${diff >= 0 ? '+' : ''}${formatINR(
+                                diff
+                              )} (${pct >= 0 ? '+' : ''}${pct.toFixed(
+                                2
+                              )}%)`
+                            },
+                            semantic: true,
+                          },
+                          {
+                            label:
+                              'Predicted Rate',
+                            icon: Landmark,
+                            value: (
+                              p: any
+                            ) =>
+                              `₹${Number(
+                                p.predictedRate
+                              ).toFixed(
+                                2
+                              )} / sq ft`,
+                          },
+                          {
+                            label:
+                              'Accessibility Score',
+                            icon: Hospital,
+                            value: (
+                              p: any
+                            ) =>
+                              `${Number(
+                                p.accessibility
+                                  .score
+                              ).toFixed(
+                                2
+                              )} / 10`,
+                          },
+                          {
+                            label:
+                              'Value Score',
+                            icon: CheckCircle2,
+                            value: (
+                              p: any
+                            ) =>
+                              `${Number(
+                                p.valueScore
+                              ).toFixed(
+                                1
+                              )} / 10`,
+                          },
+                          {
+                            label:
+                              'Price Position',
+                            icon: Landmark,
+                            value: (
+                              p: any
+                            ) => p.status,
+                            status: true,
+                          },
+                          {
+                            label:
+                              'Nearest Metro (approx.)',
+                            icon: TrainFront,
+                            value: (
+                              p: any
+                            ) =>
+                              formatDistance(
+                                p.accessibility
+                                  .transit
+                              ),
+                          },
+                        ].map((row) => (
+                          <tr
+                            key={row.label}
+                            className="border-b border-[#eceae2] last:border-0"
+                          >
+                            <td className="px-4 py-3 text-[#435048]">
+                              <span className="flex items-center gap-2">
+                                <row.icon className="size-3.5 text-primary" />
+                                {row.label}
+                              </span>
+                            </td>
+
+                            {results.map(
+                              (
+                                property: any
+                              ) => {
+                                const value =
+                                  row.value(
+                                    property
+                                  )
+                                const style =
+                                  statusStyle(
+                                    property.status
+                                  )
+
+                                return (
+                                  <td
+                                    key={
+                                      property.propertyId
+                                    }
+                                    className={`px-4 py-3 font-medium ${
+                                      row.status
+                                        ? style.text
+                                        : row.semantic &&
+                                            property.difference >
+                                              0
+                                          ? 'text-[#b43d32]'
+                                          : 'text-[#17231e]'
+                                    }`}
+                                  >
+                                    {value}
+                                  </td>
+                                )
+                              }
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  <div className="m-3 flex items-center gap-3 rounded-xl border border-[#c9ddcf] bg-[#eef5ef] px-4 py-3">
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#ddebe0] text-primary">
+                      <CheckCircle2 className="size-4" />
+                    </span>
+
+                    <p className="text-xs text-[#274a3a]">
+                      <strong>
+                        {winner.locality}
+                      </strong>{' '}
+                      offers the strongest overall
+                      combination of value and
+                      accessibility in this comparison.
+                    </p>
+                  </div>
+                </section>
+
+                {winner.reasons.length > 0 && (
+                  <section className="mt-4 rounded-xl bg-primary px-5 py-4 text-white">
+                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <p className="text-sm font-semibold">
+                          Why{' '}
+                          {winner.locality} ranks
+                          first
                         </p>
+                        <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1">
+                          {winner.reasons
+                            .slice(0, 3)
+                            .map((reason) => (
+                              <span
+                                key={reason}
+                                className="flex items-center gap-1.5 text-[10px] text-white/75"
+                              >
+                                <CheckCircle2 className="size-3" />
+                                {reason}
+                              </span>
+                            ))}
+                        </div>
                       </div>
 
-                      <span className="text-primary">
-                        {
-                          property.valueScore
-                        }
-                        /10
-                      </span>
+                      <div className="shrink-0 text-left md:text-right">
+                        <strong className="text-2xl">
+                          {winner.valueScore.toFixed(
+                            1
+                          )}
+                        </strong>
+                        <span className="text-xs text-white/70">
+                          {' '}
+                          / 10
+                        </span>
+                        <p className="text-[10px] text-white/70">
+                          {winner.valueLabel}
+                        </p>
+                      </div>
                     </div>
-
-                    <div className="mt-5 grid grid-cols-2 gap-4 text-sm">
-                      <MetricCard
-                        label="Asking rent"
-                        value={formatINR(
-                          property.askingRent ??
-                            0
-                        )}
-                      />
-
-                      <MetricCard
-                        label="Fair rent"
-                        value={formatINR(
-                          property.fairRent
-                        )}
-                        accent
-                      />
-
-                      <MetricCard
-                        label="Accessibility"
-                        value={`${property.accessibility.score}/10`}
-                      />
-
-                      <MetricCard
-                        label="Price status"
-                        value={
-                          property.status
-                        }
-                      />
-                    </div>
-
-                    <div className="mt-4">
-                      <AccessibilityPanel
-                        data={
-                          property.accessibility
-                        }
-                      />
-                    </div>
-                  </div>
-                )
-              )}
-            </div>
+                  </section>
+                )}
+              </div>
+            ) : (
+              <div className="mt-5 grid min-h-[260px] place-items-center rounded-2xl border border-dashed border-[#d4d2ca] bg-[#fcfbf7]/60 p-8 text-center">
+                <div>
+                  <Building2 className="mx-auto size-7 text-primary/60" />
+                  <p className="mt-3 text-sm font-semibold">
+                    Your property comparison will
+                    appear here
+                  </p>
+                  <p className="mt-2 max-w-md text-xs leading-5 text-[#68756e]">
+                    Configure two or three properties
+                    above, then click Compare Now to
+                    see fair-rent, value and
+                    accessibility differences.
+                  </p>
+                </div>
+              </div>
+            )}
           </section>
-        )}
-      </main>
+        </main>
 
-      <Footer />
+        <Footer />
       </>
     </AuthGuard>
   )
