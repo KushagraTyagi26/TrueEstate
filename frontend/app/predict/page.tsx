@@ -67,7 +67,6 @@ export default function PredictPage() {
             <div className="mb-3 text-sm font-semibold">Property Details</div>
             <PropertyForm showAsking={false} onSubmit={submit} submitLabel={loading ? 'Estimating…' : 'Estimate Monthly Rent'} />
             {error && <div className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">{error}</div>}
-            <p className="mt-5 text-[11px] leading-5 text-muted-foreground">* Estimates are based on historical data and ML models.<br />Actual prices may vary.</p>
           </div>
 
           {result ? (

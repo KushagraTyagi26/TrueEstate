@@ -350,41 +350,7 @@ export function Navbar() {
 }
 
 export function Footer() {
-  return (
-    <footer className="border-t border-border bg-card">
-      <div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-10 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between lg:px-8">
-        <div>
-          <div className="mb-2 flex items-center gap-2 font-semibold text-foreground">
-            <span className="grid size-6 place-items-center rounded bg-primary text-primary-foreground">
-              <House className="size-3" />
-            </span>
-            TrueEstate
-          </div>
-          <p>Rental intelligence powered by machine learning.</p>
-        </div>
-
-        <div className="flex flex-wrap gap-x-6 gap-y-2">
-          {[
-            ['Home', '/'],
-            ['Estimate Rent', '/predict'],
-            ['Evaluate Listing', '/evaluate'],
-            ['Recommendations', '/recommend'],
-            ['Compare', '/compare'],
-          ].map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              className="hover:text-foreground"
-            >
-              {label}
-            </Link>
-          ))}
-
-          <span>GitHub</span>
-        </div>
-      </div>
-    </footer>
-  )
+  return null
 }
 
 
