@@ -159,8 +159,8 @@ export default function SignupPage() {
               before you move.
             </p>
 
-            <div className="mt-9 grid max-w-[560px] grid-cols-3">
-              <div className="pr-6">
+            <div className="mt-9 flex max-w-[430px] items-stretch">
+              <div className="w-[126px] shrink-0 text-left">
                 <BarChart3 className="size-11 text-[#e0bd67]" />
                 <p className="mt-4 text-[16px] font-bold text-white">
                   Fair pricing
@@ -170,7 +170,7 @@ export default function SignupPage() {
                 </p>
               </div>
 
-              <div className="border-l border-white/15 px-7">
+              <div className="w-[126px] shrink-0 border-l border-white/15 pl-4 text-left">
                 <MapPin className="size-11 text-[#e0bd67]" />
                 <p className="mt-4 text-[16px] font-bold text-white">
                   Locality insights
@@ -180,7 +180,7 @@ export default function SignupPage() {
                 </p>
               </div>
 
-              <div className="border-l border-white/15 pl-7">
+              <div className="w-[146px] shrink-0 border-l border-white/15 pl-4 text-left">
                 <Star className="size-11 text-[#e0bd67]" />
                 <p className="mt-4 text-[16px] font-bold text-white">
                   Better choices
