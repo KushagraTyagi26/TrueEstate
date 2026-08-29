@@ -506,11 +506,13 @@ export function MetricCard({
 export function PropertyForm({
   initial = defaultProperty,
   showAsking = true,
+  showTitle = true,
   onSubmit,
   submitLabel = 'Analyze Property',
 }: {
   initial?: PropertyInput
   showAsking?: boolean
+  showTitle?: boolean
   onSubmit: (property: PropertyInput) => void
   submitLabel?: string
 }) {
@@ -527,7 +529,7 @@ export function PropertyForm({
     setProperty({ ...property, [key]: value })
   }
 
-  const fieldClass = 'h-12 rounded-xl border border-input bg-[#fffefa] px-3.5 text-base font-semibold transition focus:border-primary focus:ring-2 focus:ring-primary/10'
+  const fieldClass = 'h-13 rounded-2xl border border-input bg-[#fffefa] px-4 text-base font-semibold transition focus:border-primary focus:ring-2 focus:ring-primary/10'
 
   return (
     <form
@@ -535,11 +537,15 @@ export function PropertyForm({
         event.preventDefault()
         onSubmit(property)
       }}
-      className="rounded-3xl border border-border bg-card p-6 shadow-xl md:p-8"
+      className="rounded-[28px] border border-border bg-card p-8 shadow-xl md:p-10"
     >
-      <h2 className="mb-6 text-xl sm:text-2xl font-bold tracking-tight text-foreground">Property Details</h2>
+      {showTitle && (
+        <h2 className="mb-6 text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+          Property Details
+        </h2>
+      )}
 
-      <div className="grid gap-x-4 gap-y-6 sm:grid-cols-2">
+      <div className="grid gap-x-5 gap-y-6 sm:grid-cols-2">
         <label className="text-sm font-bold text-foreground">
           City
           <select

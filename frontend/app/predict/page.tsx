@@ -44,14 +44,20 @@ export default function PredictPage() {
     <AuthGuard>
       <>
         <Navbar />
-        <main className="mx-auto max-w-[1536px] px-6 py-6 lg:px-12 lg:py-8">
-          <PageHeader
-            title="Find the fair monthly rent for a property."
-            description="Enter the details and get AI-powered rent estimate along with market & accessibility insights."
-          />
-          <div className="grid items-start gap-8 lg:grid-cols-[460px_1fr]">
+        <main className="mx-auto max-w-[1536px] px-6 pt-3 pb-8 lg:px-12">
+          <div className="mb-5">
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-[42px] whitespace-nowrap">
+              Find the fair monthly rent for a property.
+            </h1>
+            <p className="mt-1.5 text-base sm:text-lg text-muted-foreground">
+              Enter the details and get AI-powered rent estimate along with market & accessibility insights.
+            </p>
+          </div>
+
+          <div className="grid items-start gap-8 lg:grid-cols-[520px_1fr]">
             <div>
               <PropertyForm
+                showTitle={false}
                 showAsking={false}
                 onSubmit={submit}
                 submitLabel={loading ? 'Estimating…' : 'Estimate Monthly Rent'}
@@ -65,7 +71,7 @@ export default function PredictPage() {
 
             {result ? (
               <div className="flex flex-col gap-6">
-                <section className="relative overflow-hidden rounded-3xl bg-[#0f5132] p-8 text-white shadow-xl md:p-10">
+                <section className="relative overflow-hidden rounded-[28px] bg-[#0f5132] p-8 text-white shadow-xl md:p-10">
                   <Building2 className="absolute -bottom-4 right-6 size-36 text-white/[.045]" />
                   <div className="flex items-start justify-between gap-5">
                     <div>
@@ -118,7 +124,7 @@ export default function PredictPage() {
                 <AccessibilityPanel data={result.accessibility} />
               </div>
             ) : (
-              <div className="grid min-h-[580px] place-items-center rounded-3xl border-2 border-dashed border-border bg-card/70 p-10 text-center shadow-sm">
+              <div className="grid min-h-[620px] place-items-center rounded-[28px] border-2 border-dashed border-border bg-card/70 p-10 text-center shadow-sm">
                 <div>
                   <div className="mx-auto mb-5 grid size-16 place-items-center rounded-2xl bg-primary/10 text-2xl font-extrabold text-primary shadow-sm">
                     ₹
