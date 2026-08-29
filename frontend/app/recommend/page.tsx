@@ -535,7 +535,6 @@ export default function RecommendPage() {
                     10
                   </option>
                 </select>
-                <span>recommendations</span>
               </div>
 
               {error && (
@@ -720,12 +719,12 @@ export default function RecommendPage() {
               ) : (
                 <div className="grid min-h-[320px] place-items-center rounded-2xl border border-dashed border-[#d4d2ca] bg-[#fcfbf7]/60 p-8 text-center">
                   <div>
-                    <Building2 className="mx-auto size-7 text-primary/60" />
-                    <p className="mt-3 text-sm font-semibold">
+                    <Building2 className="mx-auto size-14 text-primary/60" />
+                    <p className="mt-5 text-[24px] font-semibold leading-tight text-[#17231e]">
                       Your recommended localities will
                       appear here
                     </p>
-                    <p className="mt-2 max-w-md text-xs leading-5 text-[#68756e]">
+                    <p className="mx-auto mt-3 max-w-xl text-[16px] leading-7 text-[#68756e]">
                       Choose your city, budget, BHK and
                       priority above, then run the
                       recommendation engine.

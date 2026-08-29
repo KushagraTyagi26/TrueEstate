@@ -232,7 +232,7 @@ function CompactPropertyEditor({
         </div>
 
         <details className="group mt-1">
-          <summary className="cursor-pointer text-[11px] font-bold text-primary" >
+          <summary className="cursor-pointer text-[15px] font-bold text-primary" >
             More property details
           </summary>
 
@@ -948,12 +948,12 @@ export default function ComparePage() {
             ) : (
               <div className="mt-5 grid min-h-[260px] place-items-center rounded-2xl border border-dashed border-[#d4d2ca] bg-[#fcfbf7]/60 p-8 text-center">
                 <div>
-                  <Building2 className="mx-auto size-7 text-primary/60" />
-                  <p className="mt-3 text-sm font-semibold">
+                  <Building2 className="mx-auto size-14 text-primary/60" />
+                  <p className="mt-5 text-[24px] font-semibold leading-tight text-[#17231e]">
                     Your property comparison will
                     appear here
                   </p>
-                  <p className="mt-2 max-w-md text-xs leading-5 text-[#68756e]">
+                  <p className="mx-auto mt-3 max-w-xl text-[16px] leading-7 text-[#68756e]">
                     Configure two or three properties
                     above, then click Compare Now to
                     see fair-rent, value and
