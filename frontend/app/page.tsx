@@ -73,15 +73,6 @@ export default function Home() {
 
             <div className="hero-property-image relative min-h-[460px] lg:min-h-full">
               <div className="absolute inset-0 bg-[linear-gradient(90deg,#f7f5ef_0%,rgba(247,245,239,.72)_10%,rgba(247,245,239,0)_32%)]" />
-              <div className="absolute bottom-16 right-6 w-[255px] overflow-hidden rounded-2xl border border-white/30 bg-[#0f5132] shadow-[0_20px_55px_-20px_rgba(15,81,50,.55)] sm:right-10 lg:right-12">
-                <div className="p-5 text-white">
-                  <p className="text-xs font-medium text-white/80">Estimated Monthly Rent</p>
-                  <p className="mt-2 text-3xl font-semibold tracking-tight">₹45,661</p>
-                  <p className="mt-5 text-[11px] text-white/70">Expected Range</p>
-                  <p className="mt-1 text-sm font-semibold">₹41,000 – ₹51,000</p>
-                </div>
-                <div className="bg-[#fcfbf7] px-5 py-3.5"><span className="inline-flex items-center gap-2 rounded-full bg-[#e3ede7] px-3 py-1 text-xs font-semibold text-primary"><ShieldCheck className="size-3.5" /> Fair Value</span></div>
-              </div>
             </div>
           </div>
 

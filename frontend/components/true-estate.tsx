@@ -1,8 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState, useRef } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 import { supabase } from '@/lib/supabase'
 import {
   ArrowRight,
@@ -17,6 +17,7 @@ import {
   ShoppingBag,
   Sparkles,
   Train,
+  UserPlus,
   X,
 } from 'lucide-react'
 
@@ -35,15 +36,42 @@ import type {
   Recommendation,
 } from '@/lib/types'
 
+function getInitials(name?: string | null, email?: string | null): string {
+  if (name && name.trim()) {
+    const parts = name.trim().split(/\s+/).filter(Boolean)
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    }
+    if (parts.length === 1 && parts[0].length >= 2) {
+      return parts[0].substring(0, 2).toUpperCase()
+    }
+    if (parts.length === 1) {
+      return parts[0][0].toUpperCase()
+    }
+  }
+  if (email && email.trim()) {
+    const emailPrefix = email.split('@')[0]
+    const parts = emailPrefix.split(/[._-]/).filter(Boolean)
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase()
+    }
+    return emailPrefix.substring(0, 2).toUpperCase()
+  }
+  return 'TE'
+}
 
 export function Navbar() {
   const router = useRouter()
+  const pathname = usePathname()
 
   const [open, setOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [userName, setUserName] = useState<string | null>(null)
   const [userEmail, setUserEmail] = useState<string | null>(null)
   const [authLoading, setAuthLoading] = useState(true)
   const [signingOut, setSigningOut] = useState(false)
+
+  const menuRef = useRef<HTMLDivElement>(null)
 
   const links = [
     ['Estimate Rent', '/predict'],
@@ -107,12 +135,23 @@ export function Navbar() {
     }
   }, [])
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   const handleLogout = async () => {
     setSigningOut(true)
 
     try {
       await supabase.auth.signOut()
       setOpen(false)
+      setUserMenuOpen(false)
       router.replace('/signup')
       router.refresh()
     } finally {
@@ -125,67 +164,99 @@ export function Navbar() {
     userEmail?.split('@')[0] ||
     'Account'
 
-  const initial =
-    displayName.charAt(0).toUpperCase()
+  const initials = getInitials(userName, userEmail)
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/90 backdrop-blur">
-      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-5 lg:px-8">
+    <header className="sticky top-0 z-50 border-b border-border/70 bg-background/95 backdrop-blur">
+      <div className="relative mx-auto flex h-20 max-w-full items-center justify-between px-6 lg:px-12">
         <Link
           href="/"
-          className="flex items-center gap-2 font-semibold tracking-tight"
-          onClick={() => setOpen(false)}
+          className="z-10 flex items-center gap-3 font-bold tracking-tight text-foreground transition-opacity hover:opacity-90"
+          onClick={() => {
+            setOpen(false)
+            setUserMenuOpen(false)
+          }}
         >
-          <span className="grid size-8 place-items-center rounded-lg bg-primary text-primary-foreground">
-            <House className="size-4" />
+          <span className="grid size-11 place-items-center rounded-xl bg-primary text-primary-foreground shadow-md transition-transform hover:scale-105 sm:size-12">
+            <House className="size-6 sm:size-7" />
           </span>
-          <span className="text-lg">TrueEstate</span>
+          <span className="font-serif-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            TrueEstate
+          </span>
         </Link>
 
-        <nav className="hidden items-center gap-7 md:flex">
-          {links.map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {label}
-            </Link>
-          ))}
+        <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-4 lg:gap-8 md:flex">
+          {links.map(([label, href]) => {
+            const isActive = pathname === href
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`text-base lg:text-lg font-semibold transition-all duration-200 ${
+                  isActive
+                    ? 'rounded-full bg-primary px-5 py-2.5 text-primary-foreground shadow-md shadow-primary/20 scale-[1.02]'
+                    : 'rounded-full px-4 py-2 text-muted-foreground hover:bg-muted/80 hover:text-foreground'
+                }`}
+              >
+                {label}
+              </Link>
+            )
+          })}
         </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="relative z-10 hidden items-center md:flex" ref={menuRef}>
           {!authLoading && userEmail ? (
             <>
-              <div className="flex items-center gap-2 rounded-full border border-border bg-card px-2.5 py-1.5">
-                <span className="grid size-7 place-items-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
-                  {initial}
-                </span>
-
-                <div className="max-w-[140px] leading-tight">
-                  <p className="truncate text-xs font-semibold text-foreground">
-                    {displayName}
-                  </p>
-                  <p className="truncate text-[10px] text-muted-foreground">
-                    {userEmail}
-                  </p>
-                </div>
-              </div>
-
               <button
                 type="button"
-                onClick={handleLogout}
-                disabled={signingOut}
-                className="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60"
+                aria-label="User menu"
+                onClick={() => setUserMenuOpen((prev) => !prev)}
+                className="grid size-11 cursor-pointer place-items-center rounded-full bg-primary font-bold text-base text-primary-foreground shadow-md ring-2 ring-primary/20 transition-all hover:scale-105 hover:ring-primary/50 select-none"
               >
-                <LogOut className="size-4" />
-                {signingOut ? 'Signing out…' : 'Logout'}
+                {initials}
               </button>
+
+              {userMenuOpen && (
+                <div className="absolute right-0 top-full mt-3 w-64 rounded-2xl border border-border/80 bg-card p-2 shadow-2xl backdrop-blur z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="border-b border-border/60 px-3.5 py-3">
+                    <p className="truncate text-sm font-bold text-foreground">
+                      {displayName}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {userEmail}
+                    </p>
+                  </div>
+
+                  <div className="pt-1.5 flex flex-col gap-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserMenuOpen(false)
+                        router.push('/signup')
+                      }}
+                      className="flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                    >
+                      <UserPlus className="size-4 text-primary" />
+                      <span>Add Account</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      disabled={signingOut}
+                      className="flex w-full items-center gap-2.5 rounded-xl px-3.5 py-2.5 text-sm font-medium text-destructive transition-colors hover:bg-destructive/10 disabled:opacity-60"
+                    >
+                      <LogOut className="size-4" />
+                      <span>{signingOut ? 'Signing out…' : 'Logout'}</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </>
           ) : !authLoading ? (
             <Link
               href="/signup"
-              className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+              className="inline-flex h-10 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground shadow-md transition-colors hover:bg-primary/90"
             >
               Sign In
             </Link>
@@ -198,32 +269,39 @@ export function Navbar() {
           aria-label="Toggle navigation"
           onClick={() => setOpen(!open)}
         >
-          {open ? <X /> : <Menu />}
+          {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
       </div>
 
       {open && (
-        <nav className="flex flex-col gap-1 border-t border-border px-5 py-4 md:hidden">
-          {links.map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setOpen(false)}
-              className="rounded-md px-3 py-3 text-sm hover:bg-muted"
-            >
-              {label}
-            </Link>
-          ))}
+        <nav className="flex flex-col gap-2 border-t border-border px-6 py-4 md:hidden">
+          {links.map(([label, href]) => {
+            const isActive = pathname === href
+            return (
+              <Link
+                key={href}
+                href={href}
+                onClick={() => setOpen(false)}
+                className={`rounded-xl px-4 py-3 text-base font-semibold transition-all ${
+                  isActive
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'text-foreground hover:bg-muted'
+                }`}
+              >
+                {label}
+              </Link>
+            )
+          })}
 
           {!authLoading && userEmail ? (
-            <div className="mt-3 border-t border-border pt-3">
-              <div className="mb-3 flex items-center gap-3 px-3">
-                <span className="grid size-9 place-items-center rounded-full bg-primary/10 text-sm font-semibold text-primary">
-                  {initial}
+            <div className="mt-3 border-t border-border pt-4">
+              <div className="mb-4 flex items-center gap-3 px-3">
+                <span className="grid size-11 place-items-center rounded-full bg-primary font-bold text-base text-primary-foreground shadow-md">
+                  {initials}
                 </span>
 
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold">
+                  <p className="truncate text-base font-bold">
                     {displayName}
                   </p>
                   <p className="truncate text-xs text-muted-foreground">
@@ -232,21 +310,35 @@ export function Navbar() {
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={handleLogout}
-                disabled={signingOut}
-                className="flex h-10 w-full items-center justify-center gap-2 rounded-md border border-border text-sm font-medium transition hover:bg-muted disabled:opacity-60"
-              >
-                <LogOut className="size-4" />
-                {signingOut ? 'Signing out…' : 'Logout'}
-              </button>
+              <div className="flex flex-col gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false)
+                    router.push('/signup')
+                  }}
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-border text-sm font-semibold transition hover:bg-muted"
+                >
+                  <UserPlus className="size-4 text-primary" />
+                  Add Account
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  disabled={signingOut}
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl border border-destructive/30 bg-destructive/5 text-sm font-semibold text-destructive transition hover:bg-destructive/10 disabled:opacity-60"
+                >
+                  <LogOut className="size-4" />
+                  {signingOut ? 'Signing out…' : 'Logout'}
+                </button>
+              </div>
             </div>
           ) : !authLoading ? (
             <Link
               href="/signup"
               onClick={() => setOpen(false)}
-              className="mt-2 inline-flex h-10 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground"
+              className="mt-2 inline-flex h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-semibold text-primary-foreground"
             >
               Sign In
             </Link>
