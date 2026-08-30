@@ -336,7 +336,7 @@ Each capability remains separated at the service layer while sharing the underly
 
 <br>
 
-h2>◈ Supported Markets</h2>
+◈ Supported Markets
 
 <p>The current production system supports:</p>
 
