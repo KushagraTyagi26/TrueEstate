@@ -1,18 +1,39 @@
 <div align="center">
 
-# 🏠 TrueEstate
+<h1>
+  <img src="./assets/trueestate-logo.png" alt="TrueEstate Logo" width="48" />
+  TrueEstate
+</h1>
 
-### Rental Intelligence, Beyond Price Prediction.
+<h3>Rental Intelligence, Beyond Price Prediction.</h3>
 
-**An end-to-end machine learning platform that transforms property, market, and accessibility data into actionable rental decisions.**
+<p>
+  <strong>
+    An end-to-end machine learning platform that transforms property, market,
+    and accessibility data into actionable rental decisions.
+  </strong>
+</p>
+
+<p>
+  <code>Machine Learning</code> ·
+  <code>XGBoost</code> ·
+  <code>FastAPI</code> ·
+  <code>Next.js</code> ·
+  <code>TypeScript</code> ·
+  <code>Supabase</code>
+</p>
+
+<p>
+  <strong>Predict Fair Rent · Evaluate Listings · Discover Localities · Compare Properties</strong>
+</p>
 
 <br />
 
-`Machine Learning` · `XGBoost` · `FastAPI` · `Next.js` · `TypeScript` · `Supabase`
-
-<br />
-
-**Predict Fair Rent · Evaluate Listings · Discover Localities · Compare Properties**
+<img
+  src="./assets/trueestate-home.png"
+  alt="TrueEstate — ML-powered rental intelligence platform"
+  width="100%"
+/>
 
 </div>
 
@@ -24,7 +45,7 @@ Finding a rental property is easy.
 
 Understanding whether it is **fairly priced, well-connected, suitable for your budget, and better than the alternatives** is considerably harder.
 
-**TrueEstate** is an ML-powered rental intelligence platform built to solve that problem.
+**TrueEstate** is an ML-powered rental intelligence platform engineered to solve that problem.
 
 Instead of treating rental valuation as a single prediction task, TrueEstate combines **machine learning, market intelligence, accessibility signals, valuation logic, and recommendation systems** to create a complete decision layer for renters.
 
@@ -34,19 +55,19 @@ Instead of treating rental valuation as a single prediction task, TrueEstate com
 
 ## ◈ From Prediction to Decision Intelligence
 
-Most rental prediction systems end here:
+Conventional rental prediction systems typically stop here:
 
 ```text
-Property Features
-       │
-       ▼
+Property Details
+      │
+      ▼
    ML Model
-       │
-       ▼
+      │
+      ▼
 Predicted Rent
 ```
 
-TrueEstate extends the pipeline:
+TrueEstate extends that pipeline into a complete decision system:
 
 ```text
                          ┌─────────────────────┐
@@ -55,7 +76,7 @@ TrueEstate extends the pipeline:
                                     │
              ┌──────────────────────┼──────────────────────┐
              ▼                      ▼                      ▼
-      Market Signals        Locality Intelligence   Accessibility Data
+       Market Signals       Locality Intelligence   Accessibility Data
              │                      │                      │
              └──────────────────────┼──────────────────────┘
                                     ▼
@@ -63,199 +84,224 @@ TrueEstate extends the pipeline:
                          │ ML Valuation Engine │
                          └──────────┬──────────┘
                                     ▼
-                     Fair Rental Value Estimation
+                       Fair Rental Value Estimate
                                     │
                  ┌──────────────────┼──────────────────┐
                  ▼                  ▼                  ▼
-          Listing Analysis    Value Scoring     Market Position
+          Listing Analysis    Value Scoring      Market Position
                  │                  │                  │
                  └──────────────────┼──────────────────┘
                                     ▼
-                     Recommendation & Comparison
+                       Recommendation & Comparison
                                     │
                                     ▼
                          Rental Decision Insights
 ```
 
-The result is not merely a number — it is **context around that number**.
+The output is not merely a prediction.
+
+It is **context around the prediction — and intelligence for the decision that follows.**
 
 ---
 
-## ◈ What TrueEstate Can Do
+## ◈ Core Intelligence
 
-### 01 — Estimate Fair Market Rent
+<table>
+<tr>
+<td width="50%" valign="top">
 
-TrueEstate estimates the expected monthly rental value of a property using its physical characteristics, locality information, engineered features, and market signals.
+### 01 — ML Rent Estimation
 
-The prediction layer provides:
+Estimates the expected monthly rental value of a property using physical characteristics, locality intelligence, engineered features, and market signals.
+
+**Outputs include:**
 
 - Estimated monthly rent
 - Expected rental range
 - Predicted ₹/sq. ft.
 - Locality market rate
-- Locality + BHK market rate
-- Accessibility context
+- Locality + BHK market context
+- Accessibility intelligence
 
----
+</td>
 
-### 02 — Evaluate a Listing
+<td width="50%" valign="top">
 
-A property's asking rent means little without understanding its underlying market value.
+### 02 — Listing Evaluation
 
-TrueEstate compares the **asking rent against its estimated fair value** and determines the property's market position.
+Transforms an asking price into meaningful market context by comparing it against the model's estimated fair rental value.
 
-```text
-Asking Rent
-     │
-     ├──── Fair Rent Estimate
-     ├──── Expected Market Range
-     ├──── Price Difference
-     ├──── Market Position
-     └──── Value Score
-```
+**Evaluation includes:**
 
-Listings can then be interpreted as **fairly priced, above the expected range, or below the expected range**.
+- Asking vs. fair rent
+- Expected market range
+- Absolute price difference
+- Percentage deviation
+- Market positioning
+- Value-for-money scoring
 
----
+</td>
+</tr>
 
-### 03 — Discover Better Localities
+<tr>
+<td width="50%" valign="top">
 
-TrueEstate includes a recommendation engine designed around the renter rather than the listing.
+### 03 — Locality Recommendation
 
-Users can specify:
+Ranks localities according to the renter's requirements rather than simply returning properties within a price range.
+
+The engine considers:
 
 - Monthly budget
-- Preferred city
+- City
 - BHK requirement
 - Property size
 - Furnishing preference
-- Lifestyle / accessibility priority
+- Accessibility priorities
+- Available market intelligence
 
-The system evaluates eligible localities and ranks them using **budget compatibility, rental characteristics, accessibility, and available market intelligence**.
+</td>
+
+<td width="50%" valign="top">
+
+### 04 — Property Comparison
+
+Evaluates multiple properties through a common intelligence layer.
+
+Properties can be compared across:
+
+- Asking rent
+- Estimated fair value
+- Rental rate
+- Market position
+- Value score
+- Accessibility score
+- Nearby infrastructure
+
+</td>
+</tr>
+</table>
 
 ---
 
-### 04 — Understand Accessibility
+## ◈ Accessibility as a First-Class Signal
 
 Rental value is influenced by more than the property itself.
 
-TrueEstate incorporates proximity to key infrastructure:
+TrueEstate incorporates proximity to surrounding infrastructure to provide additional locality context.
 
-| Signal | Intelligence |
+| Signal | Intelligence Captured |
 |:---|:---|
-| 🚇 Transit | Distance to nearby transport infrastructure |
-| 🏥 Healthcare | Proximity to hospitals |
-| 🏫 Education | Proximity to schools |
-| 🛍️ Amenities | Proximity to malls and commercial infrastructure |
+| 🚇 **Transit** | Proximity to nearby transport infrastructure |
+| 🏥 **Healthcare** | Distance to hospitals |
+| 🏫 **Education** | Distance to schools |
+| 🛍️ **Amenities** | Distance to malls and commercial infrastructure |
 
-These signals are consolidated into an **Accessibility Score**, adding location context to valuation and recommendation decisions.
-
----
-
-### 05 — Compare Properties Intelligently
-
-Two similarly priced properties can represent very different value.
-
-TrueEstate provides side-by-side comparison across:
-
-- Asking rent
-- Estimated fair rent
-- Price difference
-- Predicted rental rate
-- Value score
-- Accessibility score
-- Market position
-- Nearby infrastructure
-
-The comparison engine then identifies the property offering the **strongest overall combination of value and accessibility**.
+These signals contribute to an **Accessibility Score**, allowing properties and localities to be evaluated beyond rent alone.
 
 ---
 
 ## ◈ Engineering the Valuation Pipeline
 
-TrueEstate's ML pipeline goes beyond feeding raw property columns into a regression model.
+TrueEstate's ML pipeline goes beyond passing raw property columns into a regression model.
 
-The feature space incorporates property characteristics alongside derived and market-aware signals, including:
+The feature space combines property characteristics with engineered, locality-aware, and accessibility-aware signals.
 
 ```text
-Property Features
-├── Area
-├── Bedrooms
-├── Bathrooms
-├── Balconies
-├── Property Type
-└── Furnishing
-
-Engineered Features
-├── Area per Bedroom
-├── Bathrooms per Bedroom
-└── Balconies per Bedroom
-
-Market Intelligence
-├── Locality Market Rate
-├── Locality + BHK Market Rate
-└── City-Level Market Signals
-
-Location Intelligence
-├── Hospital Distance
-├── School Distance
-├── Mall Distance
-├── Transit Distance
-└── Accessibility Score
+INPUT SPACE
+│
+├── Property Characteristics
+│   ├── Area
+│   ├── Bedrooms
+│   ├── Bathrooms
+│   ├── Balconies
+│   ├── Property Type
+│   └── Furnishing
+│
+├── Engineered Features
+│   ├── Area per Bedroom
+│   ├── Bathrooms per Bedroom
+│   └── Balconies per Bedroom
+│
+├── Market Intelligence
+│   ├── Locality Market Rate
+│   ├── Locality + BHK Market Rate
+│   └── City-Level Market Signals
+│
+└── Location Intelligence
+    ├── Hospital Distance
+    ├── School Distance
+    ├── Mall Distance
+    ├── Transit Distance
+    └── Accessibility Score
+                │
+                ▼
+        Feature Transformation
+                │
+                ▼
+         XGBoost Valuation
+                │
+                ▼
+       Predicted Rental Rate
+                │
+                ▼
+         Fair Rental Value
 ```
 
-The resulting feature representation is processed through an **XGBoost-based valuation pipeline** exposed through the backend inference layer.
+The resulting model is exposed through a dedicated **FastAPI inference layer**, allowing the frontend and downstream intelligence services to consume valuation predictions through a consistent API.
 
 ---
 
-## ◈ Platform Architecture
+## ◈ System Architecture
 
-TrueEstate follows a separated frontend, intelligence, and inference architecture.
+TrueEstate follows a separated architecture where the user interface, application services, ML inference, and data intelligence layers remain independently structured.
 
 ```text
-┌──────────────────────────────────────────────┐
-│                 USER EXPERIENCE              │
-│                                              │
-│          Next.js · React · TypeScript        │
-└──────────────────────┬───────────────────────┘
-                       │
-                       │ HTTPS / JSON
-                       ▼
-┌──────────────────────────────────────────────┐
-│                API / SERVICE LAYER           │
-│                                              │
-│                 FastAPI · Python             │
-└──────────────────────┬───────────────────────┘
-                       │
-          ┌────────────┼────────────┐
-          ▼            ▼            ▼
-    Valuation     Recommendation   Comparison
-      Engine          Engine         Engine
-          │            │            │
-          └────────────┼────────────┘
-                       ▼
-┌──────────────────────────────────────────────┐
-│             INTELLIGENCE LAYER               │
-│                                              │
-│  XGBoost · Market Data · Accessibility Data  │
-└──────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────┐
+│                    USER EXPERIENCE                    │
+│                                                       │
+│             Next.js · React · TypeScript              │
+└──────────────────────────┬────────────────────────────┘
+                           │
+                           │ HTTPS / JSON
+                           ▼
+┌───────────────────────────────────────────────────────┐
+│                  APPLICATION LAYER                    │
+│                                                       │
+│                   FastAPI · Python                    │
+└──────────────────────────┬────────────────────────────┘
+                           │
+             ┌─────────────┼─────────────┐
+             │             │             │
+             ▼             ▼             ▼
+        Valuation     Recommendation   Comparison
+         Service          Service        Service
+             │             │             │
+             └─────────────┼─────────────┘
+                           │
+                           ▼
+┌───────────────────────────────────────────────────────┐
+│                  INTELLIGENCE LAYER                   │
+│                                                       │
+│        XGBoost · Market Data · Accessibility Data     │
+└───────────────────────────────────────────────────────┘
 
-        Authentication → Supabase + Google OAuth
-        Frontend       → Vercel
-        Backend / ML   → Render
+Authentication  →  Supabase + Google OAuth
+Frontend        →  Vercel
+Backend / ML    →  Render
 ```
 
 ---
 
 ## ◈ Technology Foundation
 
-| Domain | Technology |
+| Engineering Domain | Technology |
 |---|---|
 | **Machine Learning** | Python · XGBoost · Scikit-learn |
-| **Data Engineering** | Pandas · NumPy |
-| **API Layer** | FastAPI · Uvicorn |
-| **Frontend** | Next.js · React · TypeScript |
-| **Interface** | Tailwind CSS · Lucide |
+| **Data Processing** | Pandas · NumPy |
+| **API & Services** | FastAPI · Uvicorn |
+| **Frontend Engineering** | Next.js · React · TypeScript |
+| **Interface System** | Tailwind CSS · Lucide |
 | **Authentication** | Supabase Auth · Google OAuth |
 | **Frontend Infrastructure** | Vercel |
 | **Backend Infrastructure** | Render |
@@ -265,13 +311,14 @@ TrueEstate follows a separated frontend, intelligence, and inference architectur
 
 ## ◈ API Surface
 
-The intelligence layer is exposed through a focused REST API:
+TrueEstate exposes its intelligence capabilities through a focused REST API.
 
 ```http
 POST /predict
 POST /evaluate
 POST /recommend
 POST /compare
+
 GET  /analyze/{city}/{locality}
 GET  /health
 ```
@@ -282,48 +329,83 @@ Each capability remains separated at the service layer while sharing the underly
 
 ## ◈ Supported Markets
 
-The current production system supports:
+The current production system operates across three major Indian rental markets:
 
-```text
-Bangalore  ·  Mumbai  ·  New Delhi
-```
+<div align="center">
 
-Locality-level information is used wherever sufficient data is available, with broader market signals supporting the valuation pipeline when required.
+### Bangalore · Mumbai · New Delhi
+
+</div>
+
+Locality-level intelligence is used wherever sufficient data is available, while broader market signals support the valuation pipeline when locality-level information is limited.
 
 ---
 
-## ◈ Why This Problem Matters
+## ◈ The Problem TrueEstate Solves
 
-Property marketplaces are optimized for **discovering listings**.
+Property marketplaces are exceptionally good at answering:
 
-They do not necessarily answer the questions that follow:
+> **“What properties are available?”**
 
-> Is ₹55,000 reasonable for this property?
+The harder questions come afterward.
 
-> What should a similar property actually rent for?
+> **Is ₹55,000 actually reasonable for this property?**
 
-> Am I paying a premium for this locality?
+> **What should a similar property in this locality rent for?**
 
-> Could my budget get me a better-connected location?
+> **Am I paying a premium for this location?**
 
-> Which of these properties represents better overall value?
+> **Could the same budget get me a better-connected locality?**
 
-TrueEstate is designed around those questions.
+> **Which of these properties represents stronger overall value?**
 
-It transforms rental information from something users must manually interpret into **structured decision intelligence**.
+These decisions normally require users to manually interpret fragmented information across listings, maps, locality statistics, and surrounding infrastructure.
+
+TrueEstate consolidates those signals into a single intelligence layer.
+
+```text
+Rental Data
+     +
+Market Context
+     +
+Accessibility
+     +
+Machine Learning
+     ↓
+Decision Intelligence
+```
+
+---
+
+## ◈ Design Philosophy
+
+TrueEstate was built around three engineering principles:
+
+**Prediction should have context.**  
+A predicted rent is significantly more useful when accompanied by market and locality intelligence.
+
+**Location should be measurable.**  
+Accessibility to important infrastructure should contribute to how a property is evaluated.
+
+**Models should support decisions, not replace them.**  
+The purpose of the ML layer is to convert complex rental information into structured, interpretable signals.
 
 ---
 
 <div align="center">
 
-## Built Around One Principle
+## ◈ One Platform. One Rental Decision Layer.
 
-### **A rental decision should be informed by more than the asking price.**
+### A rental decision should be informed by more than the asking price.
 
-TrueEstate combines **valuation, market context, accessibility, recommendations, and comparison** into one rental intelligence platform.
+TrueEstate brings together **valuation, market context, accessibility, recommendations, and comparison** in a unified rental intelligence platform.
 
 <br />
 
-**Predict less. Understand more. Rent smarter.**
+### **Predict less. Understand more. Rent smarter.**
+
+<br />
+
+<sub>Engineered with Machine Learning, FastAPI, Next.js and Supabase.</sub>
 
 </div>
