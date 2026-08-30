@@ -336,9 +336,9 @@ Each capability remains separated at the service layer while sharing the underly
 
 <br>
 
-◈ Supported Markets
+## ◈ Supported Markets
 
-<p>The current production system supports:</p>
+The current production system supports:
 
 <div align="center">
 
@@ -349,9 +349,9 @@ Each capability remains separated at the service layer while sharing the underly
 <br>
 
 <img src="https://img.shields.io/badge/Bangalore-174D3A?style=for-the-badge&logo=googlemaps&logoColor=white" alt="Bangalore" />
-&nbsp;
+&nbsp;&nbsp;
 <img src="https://img.shields.io/badge/Mumbai-B3955B?style=for-the-badge&logo=googlemaps&logoColor=white" alt="Mumbai" />
-&nbsp;
+&nbsp;&nbsp;
 <img src="https://img.shields.io/badge/New%20Delhi-7C5C45?style=for-the-badge&logo=googlemaps&logoColor=white" alt="New Delhi" />
 
 <br><br>
@@ -363,6 +363,12 @@ Each capability remains separated at the service layer while sharing the underly
 </div>
 
 Locality-level intelligence is used wherever sufficient data is available, while broader market signals support the valuation pipeline when locality-level information is limited.
+
+<br>
+
+---
+
+<br>
 
 <br>
 
