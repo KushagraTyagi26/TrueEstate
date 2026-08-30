@@ -489,6 +489,10 @@ export function PropertyForm({
   submitLabel?: string
 }) {
   const [property, setProperty] = useState<PropertyInput>(initial)
+  const [areaInput, setAreaInput] = useState(String(initial.area))
+  const [askingRentInput, setAskingRentInput] = useState(
+    initial.askingRent == null ? '' : String(initial.askingRent)
+  )
   const [localityOpen, setLocalityOpen] = useState(false)
   const [localitySearch, setLocalitySearch] = useState('')
 
@@ -507,7 +511,17 @@ export function PropertyForm({
     <form
       onSubmit={(event) => {
         event.preventDefault()
-        onSubmit(property)
+
+        if (areaInput.trim() === '') return
+        if (showAsking && askingRentInput.trim() === '') return
+
+        onSubmit({
+          ...property,
+          area: Number(areaInput),
+          ...(showAsking
+            ? { askingRent: Number(askingRentInput) }
+            : {}),
+        })
       }}
       className="rounded-[28px] border border-border bg-card p-6 shadow-xl md:p-8"
     >
@@ -608,7 +622,21 @@ export function PropertyForm({
 
         <label className="text-base font-extrabold text-black">
           Area (sq ft)
-          <input className={fieldClass} type="number" min="200" value={property.area} onChange={(event) => update('area', +event.target.value)} />
+          <input
+            className={fieldClass}
+            type="number"
+            min="200"
+            required
+            value={areaInput}
+            onChange={(event) => {
+              const value = event.target.value
+              setAreaInput(value)
+
+              if (value !== '') {
+                update('area', Number(value))
+              }
+            }}
+          />
         </label>
 
         <label className="text-base font-extrabold text-black">
@@ -642,7 +670,21 @@ export function PropertyForm({
         {showAsking && (
           <label className="text-base font-extrabold text-black sm:col-span-2">
             Asking Rent (Monthly)
-            <input className={fieldClass} type="number" min="1" value={property.askingRent ?? ''} onChange={(event) => update('askingRent', +event.target.value)} />
+            <input
+              className={fieldClass}
+              type="number"
+              min="1"
+              required
+              value={askingRentInput}
+              onChange={(event) => {
+                const value = event.target.value
+                setAskingRentInput(value)
+
+                if (value !== '') {
+                  update('askingRent', Number(value))
+                }
+              }}
+            />
           </label>
         )}
       </div>
@@ -660,48 +702,150 @@ export function ExpectedRangeBar({
 }: {
   evaluation: Evaluation
 }) {
-  const span = Math.max(evaluation.upperBound - evaluation.lowerBound, 1)
-  const clamp = (n: number) => Math.min(96, Math.max(4, n))
-  const fairPosition = clamp(((evaluation.estimatedRent - evaluation.lowerBound) / span) * 100)
-  const askingPosition = clamp(((evaluation.askingRent - evaluation.lowerBound) / span) * 100)
-  const askingAboveFair = evaluation.askingRent > evaluation.estimatedRent
+  const lower = evaluation.lowerBound
+  const fair = evaluation.estimatedRent
+  const upper = evaluation.upperBound
+  const asking = evaluation.askingRent
+
+  const askingBelowOrAtFair = asking <= fair
+  const askingBetweenFairAndUpper = asking > fair && asking <= upper
+  const askingAboveUpper = asking > upper
+
+  // The asking rent is always part of the scale.
+  const scaleMin = Math.min(lower, asking)
+  const scaleMax = Math.max(upper, asking)
+  const span = Math.max(scaleMax - scaleMin, 1)
+
+  const position = (value: number) =>
+    Math.min(100, Math.max(0, ((value - scaleMin) / span) * 100))
+
+  const lowerPosition = position(lower)
+  const fairPosition = position(fair)
+  const upperPosition = position(upper)
+  const askingPosition = position(asking)
+
+  const greenStart = Math.min(lowerPosition, askingPosition)
+  const greenEnd = fairPosition
+
+  const askingColor = askingBelowOrAtFair
+    ? '#17613e'
+    : askingBetweenFairAndUpper
+      ? '#e69a3b'
+      : '#df2b23'
+
+  const askingTextColor = askingBelowOrAtFair
+    ? '#17613e'
+    : askingBetweenFairAndUpper
+      ? '#b77700'
+      : '#d8231a'
 
   return (
     <section className="rounded-2xl border border-border bg-card p-6 shadow-[0_14px_40px_-34px_rgba(23,77,58,.35)]">
-      <h2 className="text-lg font-semibold tracking-[-0.02em]">Expected Rent Range</h2>
+      <h2 className="text-lg font-semibold tracking-[-0.02em]">
+        Expected Rent Range
+      </h2>
 
-      <div className="mt-7 grid grid-cols-3 text-sm">
-        <div>
-          <p className="font-semibold">{formatINR(evaluation.lowerBound)}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Lower Bound</p>
+      <div className="relative mt-8 h-[132px]">
+        {/* Top labels are positioned on the same proportional scale as the bar. */}
+        <div
+          className="absolute top-0 -translate-x-0 text-left"
+          style={{ left: `${lowerPosition}%` }}
+        >
+          <p className="whitespace-nowrap text-sm font-semibold">
+            {formatINR(lower)}
+          </p>
+          <p className="mt-1 whitespace-nowrap text-xs text-muted-foreground">
+            Lower Bound
+          </p>
         </div>
-        <div className="text-center">
-          <p className="font-semibold">{formatINR(evaluation.estimatedRent)}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Fair Rent</p>
-        </div>
-        <div className="text-right">
-          <p className="font-semibold">{formatINR(evaluation.upperBound)}</p>
-          <p className="mt-1 text-xs text-muted-foreground">Upper Bound</p>
-        </div>
-      </div>
 
-      <div className="relative mt-4 h-[86px]">
-        <div className="absolute left-0 right-0 top-2 h-2 rounded-full bg-[#e8e9e3]" />
-        <div className="absolute left-0 top-2 h-2 rounded-full bg-[#17613e] transition-[width] duration-700 ease-out" style={{ width: `${fairPosition}%` }} />
-        {askingAboveFair ? (
-          <div className="absolute top-2 h-2 rounded-r-full bg-[#df2b23] transition-all duration-700 ease-out" style={{ left: `${askingPosition}%`, right: 0 }} />
-        ) : (
-          <div className="absolute left-0 top-2 h-2 rounded-l-full bg-[#17613e] transition-all duration-700 ease-out" style={{ width: `${askingPosition}%` }} />
+        <div
+          className="absolute top-0 -translate-x-1/2 text-center"
+          style={{ left: `${fairPosition}%` }}
+        >
+          <p className="whitespace-nowrap text-sm font-semibold">
+            {formatINR(fair)}
+          </p>
+          <p className="mt-1 whitespace-nowrap text-xs text-muted-foreground">
+            Fair Rent
+          </p>
+        </div>
+
+        <div
+          className="absolute top-0 -translate-x-full text-right"
+          style={{ left: `${upperPosition}%` }}
+        >
+          <p className="whitespace-nowrap text-sm font-semibold">
+            {formatINR(upper)}
+          </p>
+          <p className="mt-1 whitespace-nowrap text-xs text-muted-foreground">
+            Upper Bound
+          </p>
+        </div>
+
+        {/* Base scale */}
+        <div className="absolute left-0 right-0 top-[66px] h-2 rounded-full bg-[#e8e9e3]" />
+
+        {/* Green zone: lower side through fair rent */}
+        <div
+          className="absolute top-[66px] h-2 rounded-l-full bg-[#17613e] transition-all duration-700 ease-out"
+          style={{
+            left: `${greenStart}%`,
+            width: `${Math.max(greenEnd - greenStart, 0)}%`,
+          }}
+        />
+
+        {/* Yellow zone: fair rent through upper bound */}
+        <div
+          className="absolute top-[66px] h-2 bg-[#e69a3b] transition-all delay-150 duration-700 ease-out"
+          style={{
+            left: `${fairPosition}%`,
+            width: `${Math.max(upperPosition - fairPosition, 0)}%`,
+          }}
+        />
+
+        {/* Red extension only when asking rent exceeds upper bound */}
+        {askingAboveUpper && (
+          <div
+            className="absolute top-[66px] h-2 rounded-r-full bg-[#df2b23] transition-all delay-300 duration-700 ease-out"
+            style={{
+              left: `${upperPosition}%`,
+              width: `${Math.max(askingPosition - upperPosition, 0)}%`,
+            }}
+          />
         )}
 
-        <div className="absolute top-0 -translate-x-1/2 transition-all duration-700 ease-out" style={{ left: `${fairPosition}%` }}>
-          <span className="block size-5 rounded-full border-[4px] border-card bg-[#17613e] shadow-[0_0_0_1px_rgba(23,97,62,.2)]" />
+        {/* Fair rent marker */}
+        <div
+          className="absolute top-[59px] -translate-x-1/2 transition-all duration-700 ease-out"
+          style={{ left: `${fairPosition}%` }}
+        >
+          <span className="block size-6 rounded-full border-[4px] border-card bg-[#17613e] shadow-[0_0_0_1px_rgba(23,97,62,.22)]" />
         </div>
 
-        <div className="absolute top-0 -translate-x-1/2 transition-all duration-700 ease-out" style={{ left: `${askingPosition}%` }}>
-          <div className="mx-auto h-12 border-l-2 border-dashed border-[#df2b23]" />
-          <div className="mt-1 -translate-x-1/2 whitespace-nowrap text-center text-[#d8231a]">
-            <p className="text-base font-bold">{formatINR(evaluation.askingRent)}</p>
+        {/* Upper bound marker */}
+        <div
+          className="absolute top-[60px] -translate-x-1/2 transition-all duration-700 ease-out"
+          style={{ left: `${upperPosition}%` }}
+        >
+          <span className="block size-5 rounded-full border-[3px] border-card bg-[#e69a3b] shadow-[0_0_0_1px_rgba(230,154,59,.22)]" />
+        </div>
+
+        {/* Asking rent marker sits exactly on the scale. */}
+        <div
+          className="absolute top-[58px] -translate-x-1/2 transition-all duration-700 ease-out"
+          style={{ left: `${askingPosition}%` }}
+        >
+          <span
+            className="mx-auto block size-7 rounded-full border-[4px] border-card shadow-[0_0_0_1px_rgba(0,0,0,.12)]"
+            style={{ backgroundColor: askingColor }}
+          />
+
+          <div
+            className="mt-3 whitespace-nowrap text-center"
+            style={{ color: askingTextColor }}
+          >
+            <p className="text-base font-bold">{formatINR(asking)}</p>
             <p className="text-xs font-semibold">Asking Rent</p>
           </div>
         </div>
@@ -709,7 +853,6 @@ export function ExpectedRangeBar({
     </section>
   )
 }
-
 
 export function ValueScoreCard({
   evaluation,
