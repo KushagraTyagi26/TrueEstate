@@ -1,15 +1,8 @@
 <div align="center">
 
-<td valign="middle">
-<img src="./assets/trueestate-logo.png" alt="TrueEstate Logo" width="48" />
-</td>
-<td valign="middle">
 <h1>
-TrueEstate
+<img src="./assets/trueestate-logo.png" alt="TrueEstate Logo" width="42" align="absmiddle"> TrueEstate
 </h1>
-</td>
-</tr>
-</table>
 <h3>
 Rental Intelligence, Beyond Price Prediction.
 </h3>
