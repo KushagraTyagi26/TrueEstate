@@ -336,13 +336,29 @@ Each capability remains separated at the service layer while sharing the underly
 
 <br>
 
-## ◈ Supported Markets
+h2>◈ Supported Markets</h2>
 
-The current production system supports:
+<p>The current production system supports:</p>
 
 <div align="center">
 
-### Bangalore · Mumbai · New Delhi
+<table>
+<tr>
+<td align="center">
+
+<br>
+
+<img src="https://img.shields.io/badge/Bangalore-174D3A?style=for-the-badge&logo=googlemaps&logoColor=white" alt="Bangalore" />
+&nbsp;
+<img src="https://img.shields.io/badge/Mumbai-B3955B?style=for-the-badge&logo=googlemaps&logoColor=white" alt="Mumbai" />
+&nbsp;
+<img src="https://img.shields.io/badge/New%20Delhi-7C5C45?style=for-the-badge&logo=googlemaps&logoColor=white" alt="New Delhi" />
+
+<br><br>
+
+</td>
+</tr>
+</table>
 
 </div>
 
@@ -351,9 +367,6 @@ Locality-level intelligence is used wherever sufficient data is available, while
 <br>
 
 ---
-
-<br>
-
 ## ◈ The Problem TrueEstate Solves
 
 Property marketplaces are optimized for answering:
