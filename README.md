@@ -1,7 +1,5 @@
 <div align="center">
 
-<table>
-<tr>
 <td valign="middle">
 <img src="./assets/trueestate-logo.png" alt="TrueEstate Logo" width="48" />
 </td>
