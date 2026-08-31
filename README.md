@@ -36,7 +36,7 @@ Understanding whether it is **fairly priced, well-connected, suitable for your b
 
 Instead of treating rental valuation as a single prediction task, TrueEstate combines **machine learning, market intelligence, accessibility signals, valuation logic, and recommendation systems** to create a complete decision layer for renters.
 
-> **TrueEstate does not simply estimate what a property should cost. It helps determine whether it is worth renting.**
+> ##**TrueEstate does not simply estimate what a property should cost. It helps determine whether it is worth renting.**
 
 <br>
 
