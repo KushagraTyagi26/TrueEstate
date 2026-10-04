@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./public/trueestate-logo.png" alt="TrueEstate" width="220" />
+<img src="./frontend/public/trueestate-logo.png" alt="TrueEstate" width="220" />
 
 ### Rental Intelligence, Beyond Price Prediction.
 
