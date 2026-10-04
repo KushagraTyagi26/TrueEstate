@@ -2,6 +2,10 @@
 
 <img src="./frontend/public/trueestate-logo.png" alt="TrueEstate" width="220" />
 
+<br>
+
+---
+
 ### Rental Intelligence, Beyond Price Prediction.
 
 **An end-to-end machine learning platform that transforms property, market, and accessibility data into actionable rental decisions.**
